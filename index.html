@@ -19,9 +19,9 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            font-size: 19px; /* Leicht vergrößert für besseres Lesen */
+            font-size: 19px; 
             line-height: 1.7;
-            letter-spacing: 0.07em; /* Mehr Abstand gegen Buchstabenfließen */
+            letter-spacing: 0.07em; 
         }
 
         header {
@@ -37,20 +37,6 @@
             margin: 5px 0;
             text-transform: uppercase;
             text-shadow: 0 0 10px rgba(0, 245, 212, 0.4);
-        }
-
-        #lupen-fehlerbox {
-            background-color: #ff5400;
-            color: #ffffff;
-            padding: 15px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 500px;
-            margin-bottom: 15px;
-            font-weight: bold;
-            text-align: center;
-            border: 3px solid #ffffff;
-            display: block;
         }
 
         .timer-container {
@@ -124,7 +110,6 @@
             margin-top: 15px;
             width: 100%;
             box-shadow: 0 4px 10px rgba(0, 245, 212, 0.2);
-            -webkit-tap-highlight-color: transparent; /* iOS Klick-Optimierung */
         }
 
         .sort-list {
@@ -174,7 +159,6 @@
             font-weight: bold;
             cursor: pointer;
             color: #ffffff;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .word-chip.selected {
@@ -211,7 +195,6 @@
             border: 1px solid rgba(255,255,255,0.2);
             padding: 15px;
             border-radius: 10px;
-            box-shadow: none;
         }
 
         .options-grid button:active, .options-grid button.selected {
@@ -237,7 +220,6 @@
             font-style: italic;
         }
 
-        /* DYSLEXIE-FREUNDLICHER REPORT CARD STYLE */
         .report-card {
             background: #0d1b2a;
             border: 2px dashed #00f5d4;
@@ -279,10 +261,6 @@
     </style>
 </head>
 <body>
-
-    <div id="lupen-fehlerbox">
-        🔍 Lupen-Info: Das Spiel bereitet den Rasen vor...
-    </div>
 
     <header>
         <h1>🏆 DFB-Wortmeister 2026 ⚽</h1>
@@ -462,7 +440,7 @@
         ];
         var s5Questions = []; var s5CurrentIndex = 0;
 
-        // KORRIGIERTER LANG-I POOL (ALLE WÖRTER ENTHALTEN EIN LANGES I ALS OPTION)
+        // MANUELL HINTERLEGTE, RAUSGEFILTERTE LANG-I FRAGEN (KEINE GENERIERUNGSFEHLER MEHR)
         var s6Pool = [
             { options: ["Kino", "Kissen", "Kind"], correct: "Kino" }, 
             { options: ["Mandarinen", "Mitte", "Tinte"], correct: "Mandarinen" },
@@ -589,11 +567,11 @@
             var feedback = document.getElementById("s1-feedback");
             if (isCorrect) {
                 feedback.className = "feedback correct";
-                feedback.innerText = "⚽ TOOOOR! Perfekt sortiert.";
-                setTimeout(function() { switchScreen("station1", "station2"); initStation2(); }, 1500);
+                feedback.innerText = "⚽ TOOOOR!";
+                setTimeout(function() { switchScreen("station1", "station2"); initStation2(); }, 1200);
             } else {
                 feedback.className = "feedback wrong";
-                feedback.innerText = "Falsche Aufstellung! ß zählt beim ABC wie ss.";
+                feedback.innerText = "ß zählt beim ABC wie ss.";
             }
         }
 
@@ -641,7 +619,7 @@
                 feedback.className = "feedback correct"; feedback.innerText = "🎯 Treffer!";
                 s2CurrentIndex++; setTimeout(function() { initStation2(); }, 1200);
             } else {
-                feedback.className = "feedback wrong"; feedback.innerText = "Parade vom Torwart! Versuchs noch mal.";
+                feedback.className = "feedback wrong"; feedback.innerText = "Versuchs noch mal.";
             }
         }
 
@@ -692,200 +670,3 @@
         }
 
         function checkStation3() {
-            var feedback = document.getElementById("s3-feedback");
-            var current = s3Questions[s3CurrentIndex];
-
-            if(!s3Selected1 || !s3Selected2) {
-                feedback.className = "feedback wrong"; feedback.innerText = "Wähle 2 Teile!";
-                return;
-            }
-
-            if((s3Selected1 === current.part1 && s3Selected2 === current.part2) || (s3Selected2 === current.part1 && s3Selected1 === current.part2)) {
-                feedback.className = "feedback correct"; feedback.innerText = "⚙️ Richtig zusammengesetzt!";
-                s3CurrentIndex++; setTimeout(function() { initStation3(); }, 1200);
-            } else {
-                feedback.className = "feedback wrong"; feedback.innerText = "Die Teile passen nicht.";
-            }
-        }
-
-        function initStation4() {
-            document.getElementById("station-title").innerText = "Taktik-Tafel: Verben-Match";
-            document.getElementById("app-progress").style.width = "56%";
-            document.getElementById("s4-feedback").innerText = "";
-            s4SelectedAnswer = "";
-
-            if (s4CurrentIndex >= s4Questions.length) {
-                switchScreen("station4", "station5"); initStation5();
-                return;
-            }
-
-            var current = s4Questions[s4CurrentIndex];
-            document.getElementById("s4-target").innerText = current.past;
-
-            var choices = s4Questions.map(function(d) { return d.base; });
-            choices = shuffleArray(choices);
-
-            var poolContainer = document.getElementById("s4-pool");
-            poolContainer.innerHTML = "";
-
-            for(var i=0; i<choices.length; i++) {
-                (function(baseWord) {
-                    var chip = document.createElement("div");
-                    chip.className = "word-chip"; chip.innerText = baseWord;
-                    chip.onclick = function() {
-                        var chips = document.querySelectorAll("#s4-pool .word-chip");
-                        for(var c=0; c<chips.length; c++) { chips[c].classList.remove("selected"); }
-                        chip.classList.add("selected"); s4SelectedAnswer = baseWord;
-                    };
-                    poolContainer.appendChild(chip);
-                })(choices[i]);
-            }
-        }
-
-        function checkStation4() {
-            var feedback = document.getElementById("s4-feedback");
-            if(!s4SelectedAnswer) {
-                feedback.className = "feedback wrong"; feedback.innerText = "Wähle ein Verb!";
-                return;
-            }
-
-            if(s4SelectedAnswer === s4Questions[s4CurrentIndex].base) {
-                feedback.className = "feedback correct"; feedback.innerText = "⚽ Tooor! Toller Pass!";
-                s4CurrentIndex++; setTimeout(function() { initStation4(); }, 1200);
-            } else {
-                feedback.className = "feedback wrong"; feedback.innerText = "Abgefangen! Suche das Grundwort.";
-            }
-        }
-
-        function initStation5() {
-            document.getElementById("station-title").innerText = "Halbfinale: Zwilling-Selbstlaute";
-            document.getElementById("app-progress").style.width = "70%";
-            document.getElementById("s5-feedback").innerText = "";
-            document.getElementById("s5-next-btn").style.display = "none";
-
-            if (s5CurrentIndex >= s5Questions.length) {
-                switchScreen("station5", "station6"); initStation6();
-                return;
-            }
-            document.getElementById("s5-word").innerText = s5Questions[s5CurrentIndex].display;
-        }
-
-        function selectS5Option(option) {
-            var feedback = document.getElementById("s5-feedback");
-            var current = s5Questions[s5CurrentIndex];
-
-            if (option === current.correct) {
-                feedback.className = "feedback correct";
-                document.getElementById("s5-word").innerText = current.full;
-                feedback.innerText = "🎉 Super! Genau ins Eck!";
-                document.getElementById("s5-next-btn").style.display = "block";
-            } else {
-                feedback.className = "feedback wrong"; feedback.innerText = "Knapp vorbei! Wähle einen anderen Zwilling.";
-            }
-        }
-
-        function nextS5Question() { s5CurrentIndex++; initStation5(); }
-
-        function initStation6() {
-            document.getElementById("station-title").innerText = "Finale: Höre das lange i!";
-            document.getElementById("app-progress").style.width = "84%";
-            document.getElementById("s6-feedback").innerText = "";
-            s6SelectedAnswer = "";
-
-            if (s6CurrentIndex >= s6Questions.length) {
-                switchScreen("station6", "station7"); initStation7();
-                return;
-            }
-
-            var current = s6Questions[s6CurrentIndex];
-            var blendedOptions = shuffleArray(current.options);
-
-            var poolContainer = document.getElementById("s6-pool");
-            poolContainer.innerHTML = "";
-
-            for (var i = 0; i < blendedOptions.length; i++) {
-                (function(opt) {
-                    var chip = document.createElement("div");
-                    chip.className = "word-chip"; chip.innerText = opt;
-                    chip.onclick = function() {
-                        var chips = document.querySelectorAll("#s6-pool .word-chip");
-                        for (var c = 0; c < chips.length; c++) { chips[c].classList.remove("selected"); }
-                        chip.classList.add("selected"); s6SelectedAnswer = opt;
-                    };
-                    poolContainer.appendChild(chip);
-                })(blendedOptions[i]);
-            }
-        }
-
-        function check6() {
-            var feedback = document.getElementById("s6-feedback");
-            if(!s6SelectedAnswer) {
-                feedback.className = "feedback wrong"; feedback.innerText = "Wähle das lange i-Wort!";
-                return;
-            }
-            if (s6SelectedAnswer === s6Questions[s6CurrentIndex].correct) {
-                feedback.className = "feedback correct"; feedback.innerText = "🎯 Ja! Das i klingt lang!";
-                s6CurrentIndex++; setTimeout(function() { initStation6(); }, 1200);
-            } else {
-                feedback.className = "feedback wrong"; feedback.innerText = "Das war ein kurzes i. Sprich es laut!";
-            }
-        }
-
-        function initStation7() {
-            document.getElementById("station-title").innerText = "Elfmeterschießen: ß oder ss?";
-            document.getElementById("app-progress").style.width = "95%";
-            document.getElementById("s7-feedback").innerText = "";
-            document.getElementById("s7-next-btn").style.display = "none";
-
-            if (s7CurrentIndex >= s7Questions.length) {
-                document.getElementById("app-progress").style.width = "100%";
-                var finalTime = stopTimer();
-                document.getElementById("rep-time").innerText = finalTime;
-                switchScreen("station7", "finish-screen");
-                document.getElementById("station-title").innerText = "WELTMEISTER! 🏆";
-                return;
-            }
-            document.getElementById("s7-word").innerText = s7Questions[s7CurrentIndex].display;
-        }
-
-        function selectS7Option(option) {
-            var feedback = document.getElementById("s7-feedback");
-            var current = s7Questions[s7CurrentIndex];
-
-            if (option === current.correct) {
-                feedback.className = "feedback correct"; document.getElementById("s7-word").innerText = current.full;
-                feedback.innerText = "⚽ DRIN! Tor!";
-                document.getElementById("s7-next-btn").style.display = "block";
-            } else {
-                feedback.className = "feedback wrong"; feedback.innerText = "Gehalten! Achte auf den Laut davor.";
-            }
-        }
-
-        // UNTERSTÜTZUNG FÜR SCHNELLE KLICKS (VERHINDERT SAFARI-FROST AUF IPHONE XR)
-        function nextS7Question() { s7CurrentIndex++; initStation7(); }
-
-        function switchScreen(oldId, newId) {
-            document.getElementById(oldId).style.display = "none";
-            document.getElementById(newId).style.display = "flex";
-        }
-
-        function restartGame() {
-            switchScreen("finish-screen", "station1");
-            setupTurnier();
-            initStation1();
-        }
-
-        window.addEventListener("DOMContentLoaded", function() {
-            try {
-                setupTurnier();
-                initStation1();
-                document.getElementById("lupen-fehlerbox").style.display = "none";
-            } catch(err) {
-                var box = document.getElementById("lupen-fehlerbox");
-                box.style.backgroundColor = "#ff5400";
-                box.innerHTML = "🚨 FEHLER: " + err.message;
-            }
-        });
-    </script>
-</body>
-</html>
