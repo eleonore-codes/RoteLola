@@ -19,9 +19,9 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            font-size: 18px;
-            line-height: 1.6;
-            letter-spacing: 0.06em; 
+            font-size: 19px; /* Leicht vergrößert für besseres Lesen */
+            line-height: 1.7;
+            letter-spacing: 0.07em; /* Mehr Abstand gegen Buchstabenfließen */
         }
 
         header {
@@ -39,7 +39,6 @@
             text-shadow: 0 0 10px rgba(0, 245, 212, 0.4);
         }
 
-        /* LUPEN-FUNKTION (DEBUG BOX) */
         #lupen-fehlerbox {
             background-color: #ff5400;
             color: #ffffff;
@@ -51,7 +50,7 @@
             font-weight: bold;
             text-align: center;
             border: 3px solid #ffffff;
-            display: block; /* Standardmäßig sichtbar, wird per JS ausgeblendet */
+            display: block;
         }
 
         .timer-container {
@@ -64,7 +63,6 @@
             font-size: 20px;
             font-weight: bold;
             color: #00f5d4;
-            box-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
         }
 
         .progress-bar {
@@ -126,10 +124,7 @@
             margin-top: 15px;
             width: 100%;
             box-shadow: 0 4px 10px rgba(0, 245, 212, 0.2);
-        }
-
-        button:active {
-            background-color: #00d1b2;
+            -webkit-tap-highlight-color: transparent; /* iOS Klick-Optimierung */
         }
 
         .sort-list {
@@ -174,11 +169,12 @@
         .word-chip {
             background-color: #415a77;
             border: 2px solid rgba(255,255,255,0.4);
-            padding: 10px 14px;
+            padding: 12px 16px;
             border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
             color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .word-chip.selected {
@@ -194,3 +190,702 @@
             letter-spacing: 0.15em;
             text-align: center;
             margin: 15px 0;
+            background: #0d1b2a;
+            padding: 12px;
+            border-radius: 8px;
+            color: #00f5d4;
+            border: 2px solid #00f5d4;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .options-grid button {
+            margin: 0;
+            background-color: #415a77;
+            color: #ffffff;
+            font-size: 26px;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: none;
+        }
+
+        .options-grid button:active, .options-grid button.selected {
+            background-color: #00f5d4;
+            color: #0d1b2a;
+        }
+
+        .feedback {
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 10px;
+            min-height: 25px;
+        }
+        
+        .correct { color: #00f5d4; text-shadow: 0 0 8px #00f5d4; }
+        .wrong { color: #ff5400; }
+
+        .hint {
+            font-size: 14px;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        /* DYSLEXIE-FREUNDLICHER REPORT CARD STYLE */
+        .report-card {
+            background: #0d1b2a;
+            border: 2px dashed #00f5d4;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .report-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #415a77;
+            padding-bottom: 6px;
+            font-size: 17px;
+        }
+
+        .report-tips {
+            background: #415a77;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-top: 20px;
+        }
+
+        .report-tips h4 {
+            margin: 0 0 8px 0;
+            color: #00f5d4;
+            font-size: 17px;
+        }
+        
+        .report-tips p {
+            margin: 0 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lupen-fehlerbox">
+        🔍 Lupen-Info: Das Spiel bereitet den Rasen vor...
+    </div>
+
+    <header>
+        <h1>🏆 DFB-Wortmeister 2026 ⚽</h1>
+        <div id="station-title" style="font-weight: bold; color: #00f5d4;">Warte auf Anpfiff...</div>
+        
+        <div class="timer-container">
+            ⏱️ Spielzeit: <span id="game-timer">00:00</span>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress" id="app-progress"></div>
+        </div>
+    </header>
+
+    <div class="game-container">
+        
+        <div id="station1" class="screen active">
+            <div class="instruction">Bringe diese 5 scharfen S-Wörter ins ABC! 🏃‍♂️💨</div>
+            <div class="hint">Regel: Das scharfe ß wird beim Einordnen genau wie ein normales ss behandelt!</div>
+            <div class="sort-list" id="s1-list"></div>
+            <div class="feedback" id="s1-feedback"></div>
+            <button onclick="checkStation1()">Aufstellung prüfen! ⚽</button>
+        </div>
+
+        <div id="station2" class="screen">
+            <div class="instruction">Finde das passende Einzahl-Wort! 👕</div>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <span id="s2-target" style="font-size: 24px; font-weight: bold; color: #00f5d4;">Mehrzahl-Wort</span>
+            </div>
+            <div class="word-pool" id="s2-pool"></div>
+            <div class="feedback" id="s2-feedback"></div>
+            <button onclick="checkStation2()">Pass spielen! 👟</button>
+        </div>
+
+        <div id="station3" class="screen">
+            <div class="instruction">Wort-Fabrik: Setze das Riesen-Wort richtig zusammen! 🛠️</div>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <span id="s3-target" style="font-size: 26px; font-weight: bold; color: #00f5d4;">Riesen-Wort</span>
+            </div>
+            <div class="hint">Finde den 1. Baustein und den 2. Baustein!</div>
+            <div class="word-pool" id="s3-pool"></div>
+            <div class="feedback" id="s3-feedback"></div>
+            <button onclick="checkStation3()">Maschine starten! ⚙️</button>
+        </div>
+
+        <div id="station4" class="screen">
+            <div class="instruction">Taktik-Tafel: Welche Grundform gehört zur Vergangenheitsform? ⚽</div>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <span id="s4-target" style="font-size: 26px; font-weight: bold; color: #00f5d4;">er/sie...</span>
+            </div>
+            <div class="hint">Im Wörterbuch findest du Verben immer unter ihrer Grundform!</div>
+            <div class="word-pool" id="s4-pool"></div>
+            <div class="feedback" id="s4-feedback"></div>
+            <button onclick="checkStation4()">Flanke schlagen! 🏃‍♂️</button>
+        </div>
+
+        <div id="station5" class="screen">
+            <div class="instruction">Welche Zwilling-Selbstlaute fehlen im Ball? ⚡</div>
+            <div class="word-display" id="s5-word">_ _</div>
+            <div class="options-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <button onclick="selectS5Option('aa')">aa</button>
+                <button onclick="selectS5Option('ee')">ee</button>
+                <button onclick="selectS5Option('oo')">oo</button>
+            </div>
+            <div class="feedback" id="s5-feedback"></div>
+            <button style="display:none;" id="s5-next-btn" onclick="nextS5Question()">Nächster Ball ⚽</button>
+        </div>
+
+        <div id="station6" class="screen">
+            <div class="instruction">Welches Wort hat ein lang gesprochenes i ohne e? 🕵️‍♂️</div>
+            <div style="text-align: center; margin-bottom: 10px; font-weight: bold; color: #00f5d4;">
+                Sprecht das Wort laut aus! Höre das lange i!
+            </div>
+            <div class="word-pool" id="s6-pool"></div>
+            <div class="feedback" id="s6-feedback"></div>
+            <button onclick="check6()">Ins Tor schießen! 🥅</button>
+        </div>
+
+        <div id="station7" class="screen">
+            <div class="instruction">Ergänze das Wort richtig: ß oder ss? ⚽</div>
+            <div class="hint">Höre auf den Selbstlaut davor: Ist er lang (ß) oder kurz (ss)?</div>
+            <div class="word-display" id="s7-word">_ _</div>
+            <div class="options-grid">
+                <button onclick="selectS7Option('ß')">ß</button>
+                <button onclick="selectS7Option('ss')">ss</button>
+            </div>
+            <div class="feedback" id="s7-feedback"></div>
+            <button style="display:none;" id="s7-next-btn" onclick="nextS7Question()">Nächstes Wort 🏃‍♂️</button>
+        </div>
+
+        <div id="finish-screen" class="screen">
+            <div class="instruction" style="text-align: center; font-size: 24px; color: #00f5d4;">🎉 TURNIERSIEG! 🎉</div>
+            
+            <div class="report-card">
+                <div style="text-align: center; font-size: 20px; margin-bottom: 15px; color: #00f5d4; font-weight: bold;">📋 DEINE WM-KARTE</div>
+                
+                <div class="report-line"><span>⏱️ Spielzeit:</span><span id="rep-time" style="color:#00f5d4; font-weight:bold;">00:00</span></div>
+                <div class="report-line"><span>⚽ Alle Stationen:</span><span style="color:#00f5d4; font-weight:bold;">Geschafft! ⭐</span></div>
+                
+                <div class="report-tips">
+                    <h4>💡 Profi-Tricks für die Arbeit:</h4>
+                    
+                    <p><b>1. Sortieren</b><br>Das scharfe <b>ß</b> wird beim ABC genau wie <b>ss</b> sortiert.</p>
+                    
+                    <p><b>2. Verben suchen</b><br>Formen wie <i>er fing</i> findest du im Heft bei der Grundform <i>fangen</i>.</p>
+                    
+                    <p><b>3. ß oder ss</b><br>Nach <b>langem</b> Laut kommt <b>ß</b> (<i>gießen</i>).<br>Nach <b>kurzem</b> Laut kommt <b>ss</b> (<i>küssen</i>).</p>
+                    
+                    <p><b>4. Langes i</b><br>Wörter wie <i>Kino, Maschine</i> haben ein langes i, aber **kein e**.</p>
+                </div>
+            </div>
+
+            <button onclick="restartGame()">Neues Spiel 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        var totalSeconds = 0;
+        var timerInterval = null;
+        
+        var s1Pool = ["draußen", "gießen", "süß", "heißen", "fließen", "schließen", "fressen", "küssen", "Kürbisse", "Flüsse", "Füchse", "Schluss", "böse", "blass"];
+        var s1Words = [];
+
+        var s2Pool = [
+            { plural: "Bücher", singular: "das Buch" }, { plural: "Gärten", singular: "der Garten" },
+            { plural: "Fahrräder", singular: "das Fahrrad" }, { plural: "Tücher", singular: "das Tuch" },
+            { plural: "Kämme", singular: "der Kamm" }, { plural: "Eier", singular: "das Ei" },
+            { plural: "Fahrten", singular: "die Fahrt" }, { plural: "Blüten", singular: "die Blüte" },
+            { plural: "Wälder", singular: "der Wald" }, { plural: "Tränen", singular: "die Träne" },
+            { plural: "Schwestern", singular: "die Schwester" }, { plural: "Flüsse", singular: "der Fluss" },
+            { plural: "Gefahren", singular: "die Gefahr" }, { plural: "Koffer", singular: "der Koffer" },
+            { plural: "Fahrkarten", singular: "die Fahrkarte" }, { plural: "Gesetze", singular: "das Gesetz" },
+            { plural: "Gläser", singular: "das Glas" }, { plural: "Kinder", singular: "das Kind" },
+            { plural: "Füchse", singular: "der Fuchs" }, { plural: "Kürbisse", singular: "der Kürbis" },
+            { plural: "Pilze", singular: "der Pilz" }, { plural: "Götter", singular: "der Gott" }
+        ];
+        var s2Questions = []; var s2CurrentIndex = 0; var s2SelectedAnswer = "";
+
+        var s3Pool = [
+            { full: "Waldarbeiter", part1: "Wald", part2: "arbeiter" },
+            { full: "Laubbäume", part1: "Laub", part2: "bäume" },
+            { full: "Buntspecht", part1: "Bunt", part2: "specht" },
+            { full: "Hinweisschild", part1: "Hinweis", part2: "schild" },
+            { full: "Naturlehrpfad", part1: "Naturlehr", part2: "pfad" },
+            { full: "Futterkrippe", part1: "Futter", part2: "krippe" },
+            { full: "Wildschweine", part1: "Wild", part2: "schweine" },
+            { full: "Rehkitz", part1: "Reh", part2: "kitz" }
+        ];
+        var s3Questions = []; var s3CurrentIndex = 0; var s3Selected1 = ""; var s3Selected2 = "";
+
+        var s4Pool = [
+            { past: "er fing", base: "fangen" }, { past: "sie zankten", base: "zanken" },
+            { past: "er vergaß", base: "vergessen" }, { past: "sie warfen", base: "werfen" },
+            { past: "er nahm", base: "nehmen" }, { past: "sie wuschen", base: "waschen" },
+            { past: "es flatterte", base: "flattern" }, { past: "sie baten", base: "bitten" },
+            { past: "er wusste", base: "wissen" }, { past: "sie halfen", base: "helfen" },
+            { past: "er machte", base: "machen" }, { past: "sie flogen", base: "fliegen" },
+            { past: "er sah", base: "sehen" }, { past: "es gefror", base: "frieren" },
+            { past: "er schnitt", base: "schneiden" }, { past: "er aß", base: "essen" },
+            { past: "sie riefen", base: "rufen" }, { past: "er log", base: "lügen" },
+            { past: "es brannte", base: "brennen" }, { past: "sie erschrak", base: "erschrecken" },
+            { past: "er saß", base: "sitzen" }, { past: "er verzieh", base: "verzeihen" }
+        ];
+        var s4Questions = []; var s4CurrentIndex = 0; var s4SelectedAnswer = "";
+
+        var s5PoolClean = [
+            { display: "die B_ _re", correct: "ee", full: "die Beere" }, { display: "das B_ _t", correct: "oo", full: "das Boot" },
+            { display: "das P_ _r", correct: "aa", full: "das Paar" }, { display: "der Kaff_ _", correct: "ee", full: "der Kaffee" },
+            { display: "das M_ _r", correct: "ee", full: "das Meer" }, { display: "das M_ _s", correct: "oo", full: "das Moos" },
+            { display: "die H_ _re", correct: "aa", full: "die Haare" }, { display: "d_ _f", correct: "oo", full: "doof" },
+            { display: "der Z_ _", correct: "oo", full: "der Zoo" }, { display: "der St_ _t", correct: "aa", full: "der Staat" },
+            { display: "das T_ _r", correct: "oo", full: "das Tor" }, { display: "der A_ _l", correct: "aa", full: "der Aal" },
+            { display: "die Id_ _", correct: "ee", full: "die Idee" }, { display: "das H_ _r", correct: "ee", full: "das Heer" },
+            { display: "die W_ _ge", correct: "aa", full: "die Waage" }, { display: "der Kl_ _", correct: "ee", full: "der Klee" },
+            { display: "der T_ _r", correct: "ee", full: "der Teer" }, { display: "l_ _r", correct: "ee", full: "leer" }
+        ];
+        var s5Questions = []; var s5CurrentIndex = 0;
+
+        // KORRIGIERTER LANG-I POOL (ALLE WÖRTER ENTHALTEN EIN LANGES I ALS OPTION)
+        var s6Pool = [
+            { options: ["Kino", "Kissen", "Kind"], correct: "Kino" }, 
+            { options: ["Mandarinen", "Mitte", "Tinte"], correct: "Mandarinen" },
+            { options: ["Maschine", "Milch", "Pille"], correct: "Maschine" }, 
+            { options: ["Apfelsinen", "Finger", "Lippe"], correct: "Apfelsinen" },
+            { options: ["Rosinen", "Riss", "Winter"], correct: "Rosinen" }, 
+            { options: ["Kusine", "Küche", "Kiste"], correct: "Kusine" },
+            { options: ["Pralinen", "Prisma", "Pirat"], correct: "Pralinen" }, 
+            { options: ["Medizin", "Mitmach", "Milli"], correct: "Medizin" },
+            { options: ["Linie", "Licht", "Links"], correct: "Linie" }, 
+            { options: ["Tiger", "Tisch", "Tipp"], correct: "Tiger" },
+            { options: ["Gardine", "Gitter", "Gift"], correct: "Gardine" }, 
+            { options: ["Klinik", "Klick", "Klingel"], correct: "Klinik" },
+            { options: ["Lawine", "Lippen", "Lila"], correct: "Lawine" }, 
+            { options: ["Clementine", "Campen", "Clever"], correct: "Clementine" },
+            { options: ["Jeans", "Jacke", "Jojo"], correct: "Jeans" }, 
+            { options: ["Baguette", "Backen", "Bäcker"], correct: "Baguette" },
+            { options: ["Lexikon", "Lesen", "Leiter"], correct: "Lexikon" }, 
+            { options: ["Pianist", "Pinsel", "Pfeil"], correct: "Pianist" },
+            { options: ["Spaghetti", "Spiegel", "Spatz"], correct: "Spaghetti" }, 
+            { options: ["Portmonee", "Post", "Pinsel"], correct: "Portmonee" }, 
+            { options: ["Allee", "Ampel", "Affe"], correct: "Allee" }
+        ];
+        var s6Questions = []; var s6CurrentIndex = 0; var s6SelectedAnswer = "";
+
+        var s7Pool = [
+            { display: "dra_ _en", correct: "ß", full: "draußen" }, { display: "gie_ _en", correct: "ß", full: "gießen" },
+            { display: "hei_ _en", correct: "ß", full: "heißen" }, { display: "flie_ _en", correct: "ß", full: "fließen" },
+            { display: "schlie_ _en", correct: "ß", full: "schließen" }, { display: "fre_ _en", correct: "ss", full: "fressen" },
+            { display: "kü_ _en", correct: "ss", full: "küssen" }, { display: "Schlu_ _", correct: "ss", full: "Schluss" },
+            { display: "Kürbi_ _e", correct: "ss", full: "Kürbisse" }, { display: "Flü_ _e", correct: "ss", full: "Flüsse" }
+        ];
+        var s7Questions = []; var s7CurrentIndex = 0;
+
+        function startTimer() {
+            if(timerInterval) clearInterval(timerInterval);
+            totalSeconds = 0;
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                var mins = Math.floor(totalSeconds / 60);
+                var secs = totalSeconds % 60;
+                document.getElementById("game-timer").innerText = 
+                    (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            return document.getElementById("game-timer").innerText;
+        }
+
+        function shuffleArray(array) {
+            var temp = [];
+            for (var k = 0; k < array.length; k++) { temp.push(array[k]); }
+            for (var i = temp.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var b = temp[i]; temp[i] = temp[j]; temp[j] = b;
+            }
+            return temp;
+        }
+
+        function setupTurnier() {
+            s1Words = shuffleArray(s1Pool).slice(0, 5);
+            s2Questions = shuffleArray(s2Pool).slice(0, 4);
+            s2CurrentIndex = 0;
+            s3Questions = shuffleArray(s3Pool).slice(0, 4);
+            s3CurrentIndex = 0;
+            s4Questions = shuffleArray(s4Pool).slice(0, 4);
+            s4CurrentIndex = 0;
+            s5Questions = shuffleArray(s5PoolClean).slice(0, 5);
+            s5CurrentIndex = 0;
+            s6Questions = shuffleArray(s6Pool).slice(0, 4);
+            s6CurrentIndex = 0;
+            s7Questions = shuffleArray(s7Pool).slice(0, 4);
+            s7CurrentIndex = 0;
+            startTimer();
+        }
+
+        function initStation1() {
+            document.getElementById("station-title").innerText = "Achtelfinale: Das scharfe ABC";
+            document.getElementById("app-progress").style.width = "14%";
+            document.getElementById("s1-feedback").innerText = "";
+            var listContainer = document.getElementById("s1-list");
+            listContainer.innerHTML = "";
+            
+            for (var i = 0; i < s1Words.length; i++) {
+                var item = document.createElement("div");
+                item.className = "sort-item";
+                item.innerHTML = '<span>' + s1Words[i] + '</span>' +
+                    '<div class="sort-nav-btns">' +
+                        '<button onclick="moveUp(' + i + ')">🔼</button>' +
+                        '<button onclick="moveDown(' + i + ')">🔽</button>' +
+                    '</div>';
+                listContainer.appendChild(item);
+            }
+        }
+
+        function moveUp(index) {
+            if (index > 0) {
+                var temp = s1Words[index]; s1Words[index] = s1Words[index - 1]; s1Words[index - 1] = temp;
+                initStation1();
+            }
+        }
+
+        function moveDown(index) {
+            if (index < s1Words.length - 1) {
+                var temp = s1Words[index]; s1Words[index] = s1Words[index + 1]; s1Words[index + 1] = temp;
+                initStation1();
+            }
+        }
+
+        function checkStation1() {
+            var correctOrder = s1Words.slice().sort(function(a, b) {
+                var normA = a.toLowerCase().replace(/ß/g, "ss");
+                var normB = b.toLowerCase().replace(/ß/g, "ss");
+                return normA.localeCompare(normB, 'de', { sensitivity: 'base' });
+            });
+
+            var isCorrect = true;
+            for(var i=0; i<s1Words.length; i++) {
+                if(s1Words[i].toLowerCase() !== correctOrder[i].toLowerCase()) isCorrect = false;
+            }
+
+            var feedback = document.getElementById("s1-feedback");
+            if (isCorrect) {
+                feedback.className = "feedback correct";
+                feedback.innerText = "⚽ TOOOOR! Perfekt sortiert.";
+                setTimeout(function() { switchScreen("station1", "station2"); initStation2(); }, 1500);
+            } else {
+                feedback.className = "feedback wrong";
+                feedback.innerText = "Falsche Aufstellung! ß zählt beim ABC wie ss.";
+            }
+        }
+
+        function initStation2() {
+            document.getElementById("station-title").innerText = "Viertelfinale: Der Mehrzahl-Stürmer";
+            document.getElementById("app-progress").style.width = "28%";
+            document.getElementById("s2-feedback").innerText = "";
+            s2SelectedAnswer = "";
+            
+            if (s2CurrentIndex >= s2Questions.length) {
+                switchScreen("station2", "station3"); initStation3();
+                return;
+            }
+
+            var currentQuestion = s2Questions[s2CurrentIndex];
+            document.getElementById("s2-target").innerText = "Mehrzahl: " + currentQuestion.plural;
+
+            var answers = s2Questions.map(function(d) { return d.singular; });
+            answers = shuffleArray(answers);
+
+            var poolContainer = document.getElementById("s2-pool");
+            poolContainer.innerHTML = "";
+
+            for (var i = 0; i < answers.length; i++) {
+                (function(ans) {
+                    var chip = document.createElement("div");
+                    chip.className = "word-chip"; chip.innerText = ans;
+                    chip.onclick = function() {
+                        var chips = document.querySelectorAll("#s2-pool .word-chip");
+                        for (var c = 0; c < chips.length; c++) { chips[c].classList.remove("selected"); }
+                        chip.classList.add("selected"); s2SelectedAnswer = ans;
+                    };
+                    poolContainer.appendChild(chip);
+                })(answers[i]);
+            }
+        }
+
+        function checkStation2() {
+            var feedback = document.getElementById("s2-feedback");
+            if(!s2SelectedAnswer) {
+                feedback.className = "feedback wrong"; feedback.innerText = "Wähle ein Wort!";
+                return;
+            }
+            if (s2SelectedAnswer === s2Questions[s2CurrentIndex].singular) {
+                feedback.className = "feedback correct"; feedback.innerText = "🎯 Treffer!";
+                s2CurrentIndex++; setTimeout(function() { initStation2(); }, 1200);
+            } else {
+                feedback.className = "feedback wrong"; feedback.innerText = "Parade vom Torwart! Versuchs noch mal.";
+            }
+        }
+
+        function initStation3() {
+            document.getElementById("station-title").innerText = "Achtelfinale: Die Wort-Fabrik";
+            document.getElementById("app-progress").style.width = "42%";
+            document.getElementById("s3-feedback").innerText = "";
+            s3Selected1 = ""; s3Selected2 = "";
+
+            if (s3CurrentIndex >= s3Questions.length) {
+                switchScreen("station3", "station4"); initStation4();
+                return;
+            }
+
+            var current = s3Questions[s3CurrentIndex];
+            document.getElementById("s3-target").innerText = "Zerlege: " + current.full;
+
+            var pool1 = []; var pool2 = [];
+            for(var k=0; k<s3Questions.length; k++) {
+                pool1.push(s3Questions[k].part1);
+                pool2.push(s3Questions[k].part2);
+            }
+            var totalPool = shuffleArray(pool1.concat(pool2));
+
+            var poolContainer = document.getElementById("s3-pool");
+            poolContainer.innerHTML = "";
+
+            for(var i=0; i<totalPool.length; i++) {
+                (function(wordPart) {
+                    var chip = document.createElement("div");
+                    chip.className = "word-chip"; chip.innerText = wordPart;
+                    chip.onclick = function() {
+                        if(chip.classList.contains("selected")) {
+                            chip.classList.remove("selected");
+                            if(s3Selected1 === wordPart) s3Selected1 = "";
+                            else if(s3Selected2 === wordPart) s3Selected2 = "";
+                        } else {
+                            if(!s3Selected1) {
+                                s3Selected1 = wordPart; chip.classList.add("selected");
+                            } else if(!s3Selected2) {
+                                s3Selected2 = wordPart; chip.classList.add("selected");
+                            }
+                        }
+                    };
+                    poolContainer.appendChild(chip);
+                })(totalPool[i]);
+            }
+        }
+
+        function checkStation3() {
+            var feedback = document.getElementById("s3-feedback");
+            var current = s3Questions[s3CurrentIndex];
+
+            if(!s3Selected1 || !s3Selected2) {
+                feedback.className = "feedback wrong"; feedback.innerText = "Wähle 2 Teile!";
+                return;
+            }
+
+            if((s3Selected1 === current.part1 && s3Selected2 === current.part2) || (s3Selected2 === current.part1 && s3Selected1 === current.part2)) {
+                feedback.className = "feedback correct"; feedback.innerText = "⚙️ Richtig zusammengesetzt!";
+                s3CurrentIndex++; setTimeout(function() { initStation3(); }, 1200);
+            } else {
+                feedback.className = "feedback wrong"; feedback.innerText = "Die Teile passen nicht.";
+            }
+        }
+
+        function initStation4() {
+            document.getElementById("station-title").innerText = "Taktik-Tafel: Verben-Match";
+            document.getElementById("app-progress").style.width = "56%";
+            document.getElementById("s4-feedback").innerText = "";
+            s4SelectedAnswer = "";
+
+            if (s4CurrentIndex >= s4Questions.length) {
+                switchScreen("station4", "station5"); initStation5();
+                return;
+            }
+
+            var current = s4Questions[s4CurrentIndex];
+            document.getElementById("s4-target").innerText = current.past;
+
+            var choices = s4Questions.map(function(d) { return d.base; });
+            choices = shuffleArray(choices);
+
+            var poolContainer = document.getElementById("s4-pool");
+            poolContainer.innerHTML = "";
+
+            for(var i=0; i<choices.length; i++) {
+                (function(baseWord) {
+                    var chip = document.createElement("div");
+                    chip.className = "word-chip"; chip.innerText = baseWord;
+                    chip.onclick = function() {
+                        var chips = document.querySelectorAll("#s4-pool .word-chip");
+                        for(var c=0; c<chips.length; c++) { chips[c].classList.remove("selected"); }
+                        chip.classList.add("selected"); s4SelectedAnswer = baseWord;
+                    };
+                    poolContainer.appendChild(chip);
+                })(choices[i]);
+            }
+        }
+
+        function checkStation4() {
+            var feedback = document.getElementById("s4-feedback");
+            if(!s4SelectedAnswer) {
+                feedback.className = "feedback wrong"; feedback.innerText = "Wähle ein Verb!";
+                return;
+            }
+
+            if(s4SelectedAnswer === s4Questions[s4CurrentIndex].base) {
+                feedback.className = "feedback correct"; feedback.innerText = "⚽ Tooor! Toller Pass!";
+                s4CurrentIndex++; setTimeout(function() { initStation4(); }, 1200);
+            } else {
+                feedback.className = "feedback wrong"; feedback.innerText = "Abgefangen! Suche das Grundwort.";
+            }
+        }
+
+        function initStation5() {
+            document.getElementById("station-title").innerText = "Halbfinale: Zwilling-Selbstlaute";
+            document.getElementById("app-progress").style.width = "70%";
+            document.getElementById("s5-feedback").innerText = "";
+            document.getElementById("s5-next-btn").style.display = "none";
+
+            if (s5CurrentIndex >= s5Questions.length) {
+                switchScreen("station5", "station6"); initStation6();
+                return;
+            }
+            document.getElementById("s5-word").innerText = s5Questions[s5CurrentIndex].display;
+        }
+
+        function selectS5Option(option) {
+            var feedback = document.getElementById("s5-feedback");
+            var current = s5Questions[s5CurrentIndex];
+
+            if (option === current.correct) {
+                feedback.className = "feedback correct";
+                document.getElementById("s5-word").innerText = current.full;
+                feedback.innerText = "🎉 Super! Genau ins Eck!";
+                document.getElementById("s5-next-btn").style.display = "block";
+            } else {
+                feedback.className = "feedback wrong"; feedback.innerText = "Knapp vorbei! Wähle einen anderen Zwilling.";
+            }
+        }
+
+        function nextS5Question() { s5CurrentIndex++; initStation5(); }
+
+        function initStation6() {
+            document.getElementById("station-title").innerText = "Finale: Höre das lange i!";
+            document.getElementById("app-progress").style.width = "84%";
+            document.getElementById("s6-feedback").innerText = "";
+            s6SelectedAnswer = "";
+
+            if (s6CurrentIndex >= s6Questions.length) {
+                switchScreen("station6", "station7"); initStation7();
+                return;
+            }
+
+            var current = s6Questions[s6CurrentIndex];
+            var blendedOptions = shuffleArray(current.options);
+
+            var poolContainer = document.getElementById("s6-pool");
+            poolContainer.innerHTML = "";
+
+            for (var i = 0; i < blendedOptions.length; i++) {
+                (function(opt) {
+                    var chip = document.createElement("div");
+                    chip.className = "word-chip"; chip.innerText = opt;
+                    chip.onclick = function() {
+                        var chips = document.querySelectorAll("#s6-pool .word-chip");
+                        for (var c = 0; c < chips.length; c++) { chips[c].classList.remove("selected"); }
+                        chip.classList.add("selected"); s6SelectedAnswer = opt;
+                    };
+                    poolContainer.appendChild(chip);
+                })(blendedOptions[i]);
+            }
+        }
+
+        function check6() {
+            var feedback = document.getElementById("s6-feedback");
+            if(!s6SelectedAnswer) {
+                feedback.className = "feedback wrong"; feedback.innerText = "Wähle das lange i-Wort!";
+                return;
+            }
+            if (s6SelectedAnswer === s6Questions[s6CurrentIndex].correct) {
+                feedback.className = "feedback correct"; feedback.innerText = "🎯 Ja! Das i klingt lang!";
+                s6CurrentIndex++; setTimeout(function() { initStation6(); }, 1200);
+            } else {
+                feedback.className = "feedback wrong"; feedback.innerText = "Das war ein kurzes i. Sprich es laut!";
+            }
+        }
+
+        function initStation7() {
+            document.getElementById("station-title").innerText = "Elfmeterschießen: ß oder ss?";
+            document.getElementById("app-progress").style.width = "95%";
+            document.getElementById("s7-feedback").innerText = "";
+            document.getElementById("s7-next-btn").style.display = "none";
+
+            if (s7CurrentIndex >= s7Questions.length) {
+                document.getElementById("app-progress").style.width = "100%";
+                var finalTime = stopTimer();
+                document.getElementById("rep-time").innerText = finalTime;
+                switchScreen("station7", "finish-screen");
+                document.getElementById("station-title").innerText = "WELTMEISTER! 🏆";
+                return;
+            }
+            document.getElementById("s7-word").innerText = s7Questions[s7CurrentIndex].display;
+        }
+
+        function selectS7Option(option) {
+            var feedback = document.getElementById("s7-feedback");
+            var current = s7Questions[s7CurrentIndex];
+
+            if (option === current.correct) {
+                feedback.className = "feedback correct"; document.getElementById("s7-word").innerText = current.full;
+                feedback.innerText = "⚽ DRIN! Tor!";
+                document.getElementById("s7-next-btn").style.display = "block";
+            } else {
+                feedback.className = "feedback wrong"; feedback.innerText = "Gehalten! Achte auf den Laut davor.";
+            }
+        }
+
+        // UNTERSTÜTZUNG FÜR SCHNELLE KLICKS (VERHINDERT SAFARI-FROST AUF IPHONE XR)
+        function nextS7Question() { s7CurrentIndex++; initStation7(); }
+
+        function switchScreen(oldId, newId) {
+            document.getElementById(oldId).style.display = "none";
+            document.getElementById(newId).style.display = "flex";
+        }
+
+        function restartGame() {
+            switchScreen("finish-screen", "station1");
+            setupTurnier();
+            initStation1();
+        }
+
+        window.addEventListener("DOMContentLoaded", function() {
+            try {
+                setupTurnier();
+                initStation1();
+                document.getElementById("lupen-fehlerbox").style.display = "none";
+            } catch(err) {
+                var box = document.getElementById("lupen-fehlerbox");
+                box.style.backgroundColor = "#ff5400";
+                box.innerHTML = "🚨 FEHLER: " + err.message;
+            }
+        });
+    </script>
+</body>
+</html>
