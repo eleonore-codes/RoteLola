@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WM-Wortmeister 2026: Das ultimative Turnier</title>
+    <title>WM-Wortmeister 2026: DFB-Auswärts-Edition</title>
     <style>
+        /* Farben des DFB-Auswärtstrikots (Dunkelblau, Türkis, Weiß) */
         :root {
-            --bg-color: #f4ebd9; 
-            --text-color: #2b2b2b;
-            --soccer-green: #2e7d32;
-            --soccer-accent: #1565c0;
-            --card-bg: #ffffff;
-            --correct-color: #4caf50;
-            --wrong-color: #e53935;
+            --bg-color: #0d1b2a;       /* Edles, dunkles DFB-Blau für den Hintergrund */
+            --text-color: #ffffff;     /* Weißer Text für perfekten Kontrast */
+            --turq-bright: #00f5d4;    /* Leuchtendes Neon-Türkis für Highlights und Erfolge */
+            --turq-dark: #00bbf9;      /* Dynamisches Türkisblau für Buttons */
+            --card-bg: #1b263b;        /* Etwas helleres Dunkelblau für die Aufgaben-Karte */
+            --correct-color: #00f5d4;  /* Türkis für richtige Antworten */
+            --wrong-color: #ff5400;    /* Signal-Orange für Fehler */
         }
 
         * {
@@ -43,13 +44,15 @@
 
         h1 {
             font-size: 22px;
-            color: var(--soccer-green);
+            color: var(--turq-bright);
             margin: 5px 0;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 245, 212, 0.4);
         }
 
         .progress-bar {
             width: 100%;
-            background-color: #ddd;
+            background-color: #415a77;
             height: 15px;
             border-radius: 10px;
             overflow: hidden;
@@ -58,9 +61,10 @@
 
         .progress {
             height: 100%;
-            background-color: var(--soccer-green);
+            background-color: var(--turq-bright);
             width: 16%;
             transition: width 0.3s ease;
+            box-shadow: 0 0 8px var(--turq-bright);
         }
 
         .game-container {
@@ -69,11 +73,12 @@
             padding: 20px;
             width: 100%;
             max-width: 500px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
             min-height: 440px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            border: 1px solid rgba(0, 245, 212, 0.2);
         }
 
         .screen {
@@ -89,12 +94,13 @@
         .instruction {
             font-weight: bold;
             margin-bottom: 12px;
-            color: var(--soccer-accent);
+            color: #ffffff;
+            font-size: 19px;
         }
 
         button {
-            background-color: var(--soccer-accent);
-            color: white;
+            background-color: var(--turq-dark);
+            color: #0d1b2a;
             border: none;
             padding: 15px 20px;
             font-size: 18px;
@@ -103,6 +109,11 @@
             cursor: pointer;
             margin-top: 15px;
             width: 100%;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.98);
         }
 
         .sort-list {
@@ -113,22 +124,25 @@
         }
 
         .sort-item {
-            background-color: #f0f4c3;
-            border: 2px solid #c0ca33;
-            padding: 10px;
+            background-color: #415a77;
+            border: 2px solid var(--turq-dark);
+            padding: 12px;
             border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: bold;
+            color: #ffffff;
         }
 
         .sort-nav-btns button {
-            padding: 4px 8px;
-            font-size: 14px;
+            padding: 6px 12px;
+            font-size: 16px;
             margin: 0;
             width: auto;
-            background-color: #78909c;
+            background-color: #0d1b2a;
+            color: var(--turq-bright);
+            border: 1px solid var(--turq-bright);
         }
 
         .word-pool {
@@ -140,28 +154,34 @@
         }
 
         .word-chip {
-            background-color: #e1f5fe;
-            border: 2px solid #03a9f4;
+            background-color: #415a77;
+            border: 2px solid rgba(255,255,255,0.4);
             padding: 10px 14px;
             border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
+            color: #ffffff;
+            transition: all 0.2s;
         }
 
         .word-chip.selected {
-            background-color: #03a9f4;
-            color: white;
+            background-color: var(--turq-bright);
+            color: #0d1b2a;
+            border-color: var(--turq-bright);
+            box-shadow: 0 0 10px var(--turq-bright);
         }
 
         .word-display {
-            font-size: 30px;
+            font-size: 32px;
             font-weight: bold;
             letter-spacing: 0.15em;
             text-align: center;
             margin: 15px 0;
-            background: #f5f5f5;
-            padding: 10px;
+            background: #0d1b2a;
+            padding: 12px;
             border-radius: 8px;
+            color: var(--turq-bright);
+            border: 1px solid rgba(0, 245, 212, 0.3);
         }
 
         .options-grid {
@@ -172,9 +192,15 @@
 
         .options-grid button {
             margin: 0;
-            background-color: #cfd8dc;
-            color: #37474f;
+            background-color: #415a77;
+            color: #ffffff;
             font-size: 22px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .options-grid button:active {
+            background-color: var(--turq-bright);
+            color: #0d1b2a;
         }
 
         .feedback {
@@ -185,12 +211,12 @@
             min-height: 25px;
         }
         
-        .correct { color: var(--correct-color); }
+        .correct { color: var(--correct-color); text-shadow: 0 0 8px var(--correct-color); }
         .wrong { color: var(--wrong-color); }
 
         .hint {
             font-size: 14px;
-            color: #616161;
+            color: #e0e0e0;
             margin-bottom: 10px;
             font-style: italic;
         }
@@ -199,8 +225,8 @@
 <body>
 
     <header>
-        <h1>🏆 WM-Wortmeister 2026 ⚽</h1>
-        <div id="station-title" style="font-weight: bold; color: var(--soccer-green);">Startet...</div>
+        <h1>🏆 DFB-Wortmeister 2026 ⚽</h1>
+        <div id="station-title" style="font-weight: bold; color: var(--turq-bright);">Startet...</div>
         <div class="progress-bar">
             <div class="progress" id="app-progress"></div>
         </div>
@@ -209,8 +235,8 @@
     <div class="game-container">
         
         <div id="station1" class="screen active">
-            <div class="instruction">Bringe diese 5 zufälligen WM-Wörter ins ABC! 🏃‍♂️💨</div>
-            <div class="hint">Denk an die Regel: Die Pünktchen bei Ä, Ö, Ü werden beim Ordnen einfach ignoriert!</div>
+            <div class="instruction">Bringe diese 5 scharfen S-Wörter ins ABC! 🏃‍♂️💨</div>
+            <div class="hint">Regel: Das scharfe ß wird beim Einordnen genau wie ein normales ss behandelt!</div>
             <div class="sort-list" id="s1-list"></div>
             <div class="feedback" id="s1-feedback"></div>
             <button onclick="checkStation1()">Aufstellung prüfen! ⚽</button>
@@ -219,7 +245,7 @@
         <div id="station2" class="screen">
             <div class="instruction">Finde das passende Einzahl-Wort! 👕</div>
             <div style="text-align: center; margin-bottom: 10px;">
-                <span id="s2-target" style="font-size: 24px; font-weight: bold; color: var(--soccer-accent);">Mehrzahl-Wort</span>
+                <span id="s2-target" style="font-size: 24px; font-weight: bold; color: var(--turq-bright);">Mehrzahl-Wort</span>
             </div>
             <div class="word-pool" id="s2-pool"></div>
             <div class="feedback" id="s2-feedback"></div>
@@ -240,7 +266,7 @@
 
         <div id="station4" class="screen">
             <div class="instruction">Welches Wort hat ein lang gesprochenes i ohne e? 🕵️‍♂️</div>
-            <div style="text-align: center; margin-bottom: 10px; font-weight: bold; color: #ff8f00;">
+            <div style="text-align: center; margin-bottom: 10px; font-weight: bold; color: var(--turq-bright);">
                 Sprecht das Wort laut aus! Höre das lange i!
             </div>
             <div class="word-pool" id="s4-pool"></div>
@@ -260,7 +286,7 @@
         </div>
 
         <div id="finish-screen" class="screen">
-            <div class="instruction" style="text-align: center; font-size: 24px;">🎉 WELTMEISTER! 🎉</div>
+            <div class="instruction" style="text-align: center; font-size: 24px; color: var(--turq-bright);">🎉 WELTMEISTER! 🎉</div>
             <div style="text-align: center; font-size: 60px; margin: 20px 0;">🏆</div>
             <p style="text-align: center; font-weight: bold;">Du hast den gesamten Wortschatz gemeistert! Beim nächsten Versuch warten neue Zufallswörter auf dich!</p>
             <button onclick="restartGame()">Neues Turnier starten! 🔄</button>
@@ -278,11 +304,10 @@
             return temp;
         }
 
-        // POOLS
+        // --- EXAKT ALLE RELEVANTEN WOERTER AUS DEM HEFT ---
         const s1Pool = [
-            "Berg", "Ort", "Dorf", "Netz", "Kreis", "Erde", "Zeit", "Hase", "Garten", "Punkt", "Feuer", 
-            "Licht", "Ängstlich", "Buntspecht", "Waldarbeiter", "Naturlehrpfad", "Wildschweine", "Rehkitz", 
-            "Laubbäume", "Hinweisschild", "Futterkrippe", "Schloss", "Stoff", "Wind"
+            "draußen", "gießen", "süß", "heißen", "fließen", "schließen", 
+            "fressen", "küssen", "Kürbisse", "Flüsse", "Füchse", "Schluss"
         ];
         let s1Words = [];
 
@@ -381,7 +406,7 @@
 
         // STATION 1
         function initStation1() {
-            document.getElementById("station-title").innerText = "Achtelfinale: Das Zufalls-ABC";
+            document.getElementById("station-title").innerText = "Achtelfinale: Das scharfe ABC";
             document.getElementById("app-progress").style.width = "16%";
             document.getElementById("s1-feedback").innerText = "";
             const listContainer = document.getElementById("s1-list");
@@ -420,7 +445,12 @@
         }
 
         function checkStation1() {
-            const correctOrder = [...s1Words].sort((a, b) => a.localeCompare(b, 'de', { sensitivity: 'base' }));
+            const correctOrder = [...s1Words].sort((a, b) => {
+                let normalizeA = a.replace(/ß/g, "ss");
+                let normalizeB = b.replace(/ß/g, "ss");
+                return normalizeA.localeCompare(normalizeB, 'de', { sensitivity: 'base' });
+            });
+
             let isCorrect = true;
             for(let i=0; i<s1Words.length; i++) {
                 if(s1Words[i] !== correctOrder[i]) isCorrect = false;
@@ -436,7 +466,7 @@
                 }, 2000);
             } else {
                 feedback.className = "feedback wrong";
-                feedback.innerText = "Ein Spieler steht noch im Abseits! Denk an das ABC.";
+                feedback.innerText = "Ein Spieler steht noch im Abseits! Denk dran: ß wird wie ss sortiert.";
             }
         }
 
@@ -629,7 +659,6 @@
             initStation1();
         }
 
-        // Zuverlässiger Start der App
         window.addEventListener("DOMContentLoaded", () => {
             setupTurnier();
             initStation1();
