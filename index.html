@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WM-Wortmeister 2026: Das ultimative LRS-Turnier</title>
+    <title>WM-Wortmeister 2026: Das ultimative Turnier</title>
     <style>
         :root {
             --bg-color: #f4ebd9; 
@@ -200,7 +200,7 @@
 
     <header>
         <h1>🏆 WM-Wortmeister 2026 ⚽</h1>
-        <div id="station-title" style="font-weight: bold; color: var(--soccer-green);">Station 1</div>
+        <div id="station-title" style="font-weight: bold; color: var(--soccer-green);">Startet...</div>
         <div class="progress-bar">
             <div class="progress" id="app-progress"></div>
         </div>
@@ -270,15 +270,15 @@
 
     <script>
         function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
+            let temp = [...array];
+            for (let i = temp.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+                [temp[i], temp[j]] = [temp[j], temp[i]];
             }
-            return array;
+            return temp;
         }
 
-        // --- VOLLSTÄNDIGER EXTRAHIERTER WORTSCHATZ (ALLE WOERTER AUS DEM PDF) ---
-        
+        // POOLS
         const s1Pool = [
             "Berg", "Ort", "Dorf", "Netz", "Kreis", "Erde", "Zeit", "Hase", "Garten", "Punkt", "Feuer", 
             "Licht", "Ängstlich", "Buntspecht", "Waldarbeiter", "Naturlehrpfad", "Wildschweine", "Rehkitz", 
@@ -314,7 +314,7 @@
         let s2CurrentIndex = 0;
         let s2SelectedAnswer = "";
 
-        const s3Pool = [
+        const s3PoolClean = [
             { display: "die B_ _re", correct: "ee", full: "die Beere" },
             { display: "das B_ _t", correct: "oo", full: "das Boot" },
             { display: "das P_ _r", correct: "aa", full: "das Paar" },
@@ -328,4 +328,312 @@
             { display: "das T_ _r", correct: "oo", full: "das Tor" },
             { display: "der A_ _l", correct: "aa", full: "der Aal" },
             { display: "die Id_ _", correct: "ee", full: "die Idee" },
-            { display
+            { display: "das H_ _r", correct: "ee", full: "das Heer" },
+            { display: "die W_ _ge", correct: "aa", full: "die Waage" }
+        ];
+        let s3Questions = [];
+        let s3CurrentIndex = 0;
+
+        const s4Pool = [
+            { options: ["Kino", "Kissen", "Kind"], correct: "Kino" },
+            { options: ["Mandarinen", "Mitte", "Tinte"], correct: "Mandarinen" },
+            { options: ["Maschine", "Milch", "Pille"], correct: "Maschine" },
+            { options: ["Apfelsinen", "Finger", "Lippe"], correct: "Apfelsinen" },
+            { options: ["Rosinen", "Riss", "Winter"], correct: "Rosinen" },
+            { options: ["Kusine", "Küche", "Kiste"], correct: "Kusine" },
+            { options: ["Pralinen", "Prisma", "Pirat"], correct: "Pralinen" },
+            { options: ["Medizin", "Mitmach", "Milli"], correct: "Medizin" },
+            { options: ["Linie", "Licht", "Links"], correct: "Linie" },
+            { options: ["Tiger", "Tisch", "Tipp"], correct: "Tiger" },
+            { options: ["Gardine", "Gitter", "Gift"], correct: "Gardine" },
+            { options: ["Klinik", "Klick", "Klingel"], correct: "Klinik" },
+            { options: ["Lawine", "Lippen", "Lila"], correct: "Lawine" },
+            { options: ["Clementine", "Campen", "Clever"], correct: "Clementine" }
+        ];
+        let s4Questions = [];
+        let s4CurrentIndex = 0;
+        let s4SelectedAnswer = "";
+
+        const s5Pool = [
+            { display: "dra_ _en", correct: "ß", full: "draußen" },
+            { display: "gie_ _en", correct: "ß", full: "gießen" },
+            { display: "s_ _ß", correct: "ß", full: "süß" },
+            { display: "hei_ _en", correct: "ß", full: "heißen" },
+            { display: "flie_ _en", correct: "ß", full: "fließen" },
+            { display: "schlie_ _en", correct: "ß", full: "schließen" },
+            { display: "fre_ _en", correct: "ss", full: "fressen" },
+            { display: "kü_ _en", correct: "ss", full: "küssen" }
+        ];
+        let s5Questions = [];
+        let s5CurrentIndex = 0;
+
+        function setupTurnier() {
+            s1Words = shuffleArray(s1Pool).slice(0, 5);
+            s2Questions = shuffleArray(s2Pool).slice(0, 5);
+            s2CurrentIndex = 0;
+            s3Questions = shuffleArray(s3PoolClean).slice(0, 5);
+            s3CurrentIndex = 0;
+            s4Questions = shuffleArray(s4Pool).slice(0, 5);
+            s4CurrentIndex = 0;
+            s5Questions = shuffleArray(s5Pool).slice(0, 5);
+            s5CurrentIndex = 0;
+        }
+
+        // STATION 1
+        function initStation1() {
+            document.getElementById("station-title").innerText = "Achtelfinale: Das Zufalls-ABC";
+            document.getElementById("app-progress").style.width = "16%";
+            document.getElementById("s1-feedback").innerText = "";
+            const listContainer = document.getElementById("s1-list");
+            listContainer.innerHTML = "";
+            
+            s1Words.forEach((word, index) => {
+                const item = document.createElement("div");
+                item.className = "sort-item";
+                item.innerHTML = `
+                    <span>${word}</span>
+                    <div class="sort-nav-btns">
+                        <button onclick="moveUp(${index})">🔼</button>
+                        <button onclick="moveDown(${index})">🔽</button>
+                    </div>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function moveUp(index) {
+            if (index > 0) {
+                const temp = s1Words[index];
+                s1Words[index] = s1Words[index - 1];
+                s1Words[index - 1] = temp;
+                initStation1();
+            }
+        }
+
+        function moveDown(index) {
+            if (index < s1Words.length - 1) {
+                const temp = s1Words[index];
+                s1Words[index] = s1Words[index + 1];
+                s1Words[index + 1] = temp;
+                initStation1();
+            }
+        }
+
+        function checkStation1() {
+            const correctOrder = [...s1Words].sort((a, b) => a.localeCompare(b, 'de', { sensitivity: 'base' }));
+            let isCorrect = true;
+            for(let i=0; i<s1Words.length; i++) {
+                if(s1Words[i] !== correctOrder[i]) isCorrect = false;
+            }
+
+            const feedback = document.getElementById("s1-feedback");
+            if (isCorrect) {
+                feedback.className = "feedback correct";
+                feedback.innerText = "⚽ TOOOOR! Perfekt sortiert. Weiter zum Viertelfinale!";
+                setTimeout(() => {
+                    switchScreen("station1", "station2");
+                    initStation2();
+                }, 2000);
+            } else {
+                feedback.className = "feedback wrong";
+                feedback.innerText = "Ein Spieler steht noch im Abseits! Denk an das ABC.";
+            }
+        }
+
+        // STATION 2
+        function initStation2() {
+            document.getElementById("station-title").innerText = "Viertelfinale: Der Mehrzahl-Stürmer";
+            document.getElementById("app-progress").style.width = "34%";
+            document.getElementById("s2-feedback").innerText = "";
+            s2SelectedAnswer = "";
+            
+            if (s2CurrentIndex >= s2Questions.length) {
+                switchScreen("station2", "station3");
+                initStation3();
+                return;
+            }
+
+            const currentQuestion = s2Questions[s2CurrentIndex];
+            document.getElementById("s2-target").innerText = `Mehrzahl: ${currentQuestion.plural}`;
+
+            let answers = s2Questions.map(d => d.singular);
+            answers = shuffleArray(answers);
+
+            const poolContainer = document.getElementById("s2-pool");
+            poolContainer.innerHTML = "";
+
+            answers.forEach(ans => {
+                const chip = document.createElement("div");
+                chip.className = "word-chip";
+                chip.innerText = ans;
+                chip.onclick = function() {
+                    document.querySelectorAll("#s2-pool .word-chip").forEach(c => c.classList.remove("selected"));
+                    chip.classList.add("selected");
+                    s2SelectedAnswer = ans;
+                };
+                poolContainer.appendChild(chip);
+            });
+        }
+
+        function checkStation2() {
+            const feedback = document.getElementById("s2-feedback");
+            if(!s2SelectedAnswer) {
+                feedback.className = "feedback wrong";
+                feedback.innerText = "Wähle zuerst einen Einzahl-Pass!";
+                return;
+            }
+
+            if (s2SelectedAnswer === s2Questions[s2CurrentIndex].singular) {
+                feedback.className = "feedback correct";
+                feedback.innerText = "🎯 Treffer! Sicher verwandelt.";
+                s2CurrentIndex++;
+                setTimeout(() => { initStation2(); }, 1500);
+            } else {
+                feedback.className = "feedback wrong";
+                feedback.innerText = "Parade vom Torwart! Überlege noch einmal.";
+            }
+        }
+
+        // STATION 3
+        function initStation3() {
+            document.getElementById("station-title").innerText = "Halbfinale: Zwilling-Selbstlaute";
+            document.getElementById("app-progress").style.width = "50%";
+            document.getElementById("s3-feedback").innerText = "";
+            document.getElementById("s3-next-btn").style.display = "none";
+
+            if (s3CurrentIndex >= s3Questions.length) {
+                switchScreen("station3", "station4");
+                initStation4();
+                return;
+            }
+
+            document.getElementById("s3-word").innerText = s3Questions[s3CurrentIndex].display;
+        }
+
+        function selectS3Option(option) {
+            const feedback = document.getElementById("s3-feedback");
+            const current = s3Questions[s3CurrentIndex];
+
+            if (option === current.correct) {
+                feedback.className = "feedback correct";
+                document.getElementById("s3-word").innerText = current.full;
+                feedback.innerText = "🎉 Super! Der Ball fliegt genau ins Eck!";
+                document.getElementById("s3-next-btn").style.display = "block";
+            } else {
+                feedback.className = "feedback wrong";
+                feedback.innerText = "Knapp vorbei! Probiere einen anderen Zwilling.";
+            }
+        }
+
+        function nextS3Question() {
+            s3CurrentIndex++;
+            initStation3();
+        }
+
+        // STATION 4
+        function initStation4() {
+            document.getElementById("station-title").innerText = "Finale: Höre das lange i!";
+            document.getElementById("app-progress").style.width = "68%";
+            document.getElementById("s4-feedback").innerText = "";
+            s4SelectedAnswer = "";
+
+            if (s4CurrentIndex >= s4Questions.length) {
+                switchScreen("station4", "station5");
+                initStation5();
+                return;
+            }
+
+            const current = s4Questions[s4CurrentIndex];
+            let blendedOptions = shuffleArray(current.options);
+
+            const poolContainer = document.getElementById("s4-pool");
+            poolContainer.innerHTML = "";
+
+            blendedOptions.forEach(opt => {
+                const chip = document.createElement("div");
+                chip.className = "word-chip";
+                chip.innerText = opt;
+                chip.onclick = function() {
+                    document.querySelectorAll("#s4-pool .word-chip").forEach(c => c.classList.remove("selected"));
+                    chip.classList.add("selected");
+                    s4SelectedAnswer = opt;
+                };
+                poolContainer.appendChild(chip);
+            });
+        }
+
+        function checkStation4() {
+            const feedback = document.getElementById("s4-feedback");
+            if(!s4SelectedAnswer) {
+                feedback.className = "feedback wrong";
+                feedback.innerText = "Tippe auf das Wort mit dem langen i!";
+                return;
+            }
+
+            if (s4SelectedAnswer === s4Questions[s4CurrentIndex].correct) {
+                feedback.className = "feedback correct";
+                feedback.innerText = "🎯 Ja! Das i wird gaaaaanz lang gesprochen!";
+                s4CurrentIndex++;
+                setTimeout(() => { initStation4(); }, 1500);
+            } else {
+                feedback.className = "feedback wrong";
+                feedback.innerText = "Huch, das war ein kurzes i! Sprich das Wort laut aus.";
+            }
+        }
+
+        // STATION 5
+        function initStation5() {
+            document.getElementById("station-title").innerText = "Elfmeterschießen: Das scharfe S";
+            document.getElementById("app-progress").style.width = "85%";
+            document.getElementById("s5-feedback").innerText = "";
+            document.getElementById("s5-next-btn").style.display = "none";
+
+            if (s5CurrentIndex >= s5Questions.length) {
+                document.getElementById("app-progress").style.width = "100%";
+                switchScreen("station5", "finish-screen");
+                document.getElementById("station-title").innerText = "WELTMEISTER! 🏆";
+                return;
+            }
+
+            document.getElementById("s5-word").innerText = s5Questions[s5CurrentIndex].display;
+        }
+
+        function selectS5Option(option) {
+            const feedback = document.getElementById("s5-feedback");
+            const current = s5Questions[s5CurrentIndex];
+
+            if (option === current.correct) {
+                feedback.className = "feedback correct";
+                document.getElementById("s5-word").innerText = current.full;
+                feedback.innerText = "⚽ DRIN! Unhaltbar verwandelt!";
+                document.getElementById("s5-next-btn").style.display = "block";
+            } else {
+                feedback.className = "feedback wrong";
+                feedback.innerText = "Der Torwart hält! Nach einem langen Selbstlaut oder Zwielaut folgt meistens ein ß!";
+            }
+        }
+
+        function nextS5Question() {
+            s5CurrentIndex++;
+            initStation5();
+        }
+
+        function switchScreen(oldId, newId) {
+            document.getElementById(oldId).classList.remove("active");
+            document.getElementById(newId).classList.add("active");
+        }
+
+        function restartGame() {
+            switchScreen("finish-screen", "station1");
+            setupTurnier();
+            initStation1();
+        }
+
+        // Zuverlässiger Start der App
+        window.addEventListener("DOMContentLoaded", () => {
+            setupTurnier();
+            initStation1();
+        });
+    </script>
+</body>
+</html>
