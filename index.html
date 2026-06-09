@@ -268,7 +268,7 @@
 
     <header>
         <h1>🏆 DFB-Wortmeister 2026 ⚽</h1>
-        <div id="station-title" style="font-weight: bold; color: #00f5d4;">Warte auf Anpfiff...</div>
+        <div id="station-title" style="font-weight: bold; color: #00f5d4;">Bereite Arena vor...</div>
         
         <div class="timer-container">
             ⏱️ Spielzeit: <span id="game-timer">00:00</span>
@@ -390,16 +390,16 @@
         var totalGoalsToMake = 25; 
         var totalAttemptsMade = 0; 
 
-        var s1Pool = ["draußen", "gießen", "süß", "heißen", "fließen", "schließen", "fressen", "küssen", "Kürbisse", "Flüsse", "Füchse", "Schluss", "böse", "blass"];
+        var globalS1WortPool = ["draußen", "gießen", "süß", "heißen", "fließen", "schließen", "fressen", "küssen", "Kürbisse", "Flüsse", "Füchse", "Schluss", "böse", "blass"];
         var s1Words = [];
 
-        var s2Pool = [
+        var globalS2FragenPool = [
             { plural: "Bücher", singular: "das Buch" }, { plural: "Gärten", singular: "der Garten" },
             { plural: "Fahrräder", singular: "das Fahrrad" }, { plural: "Tücher", singular: "das Tuch" },
             { plural: "Kämme", singular: "der Kamm" }, { plural: "Eier", singular: "das Ei" },
             { plural: "Fahrten", singular: "die Fahrt" }, { plural: "Blüten", singular: "die Blüte" },
             { plural: "Wälder", singular: "der Wald" }, { plural: "Tränen", singular: "die Träne" },
-            { plural: "Schwestern", singular: "die Schwester" }, { plural: "Flüsse", singular: "der Fluss" },
+            { plural: "Schwestern", singular: "die Schwester" }, { plural: "Flüsse", Ceremony: "der Fluss" },
             { plural: "Gefahren", singular: "die Gefahr" }, { plural: "Koffer", singular: "der Koffer" },
             { plural: "Fahrkarten", singular: "die Fahrkarte" }, { plural: "Gesetze", singular: "das Gesetz" },
             { plural: "Gläser", singular: "das Glas" }, { plural: "Kinder", singular: "das Kind" },
@@ -408,7 +408,7 @@
         ];
         var s2Questions = []; var s2CurrentIndex = 0; var s2SelectedAnswer = "";
 
-        var s3Pool = [
+        var globalS3BausteinPool = [
             { full: "Waldarbeiter", part1: "Wald", part2: "arbeiter" },
             { full: "Laubbäume", part1: "Laub", part2: "bäume" },
             { full: "Buntspecht", part1: "Bunt", part2: "specht" },
@@ -420,7 +420,7 @@
         ];
         var s3Questions = []; var s3CurrentIndex = 0; var s3Selected1 = ""; var s3Selected2 = "";
 
-        var s4Pool = [
+        var globalS4VerbenPool = [
             { past: "er fing", base: "fangen" }, { past: "sie zankten", base: "zanken" },
             { past: "er vergaß", base: "vergessen" }, { past: "sie warfen", base: "werfen" },
             { past: "er nahm", base: "nehmen" }, { past: "sie wuschen", base: "waschen" },
@@ -435,7 +435,7 @@
         ];
         var s4Questions = []; var s4CurrentIndex = 0; var s4SelectedAnswer = "";
 
-        var s5PoolClean = [
+        var globalS5VokabelPool = [
             { display: "die B_ _re", correct: "ee", full: "die Beere" }, { display: "das B_ _t", correct: "oo", full: "das Boot" },
             { display: "das P_ _r", correct: "aa", full: "das Paar" }, { display: "der Kaff_ _", correct: "ee", full: "der Kaffee" },
             { display: "das M_ _r", correct: "ee", full: "das Meer" }, { display: "das M_ _s", correct: "oo", full: "das Moos" },
@@ -448,7 +448,7 @@
         ];
         var s5Questions = []; var s5CurrentIndex = 0;
 
-        var s6Pool = [
+        var globalS6FremdwortPool = [
             { options: ["Kino", "Kissen", "Kind"], correct: "Kino" }, 
             { options: ["Mandarinen", "Mitte", "Tinte"], correct: "Mandarinen" },
             { options: ["Maschine", "Milch", "Pille"], correct: "Maschine" }, 
@@ -473,7 +473,7 @@
         ];
         var s6Questions = []; var s6CurrentIndex = 0; var s6SelectedAnswer = "";
 
-        var s7Pool = [
+        var globalS7LautPool = [
             { display: "dra_ _en", correct: "ß", full: "draußen" }, { display: "gie_ _en", correct: "ß", full: "gießen" },
             { display: "hei_ _en", correct: "ß", full: "heißen" }, { display: "flie_ _en", correct: "ß", full: "fließen" },
             { display: "schlie_ _en", correct: "ß", full: "schließen" }, { display: "fre_ _en", correct: "ss", full: "fressen" },
@@ -511,18 +511,18 @@
 
         function setupTurnier() {
             totalAttemptsMade = 0;
-            s1Words = shuffleArray(s1Pool).slice(0, 5);
-            s2Questions = shuffleArray(s2Pool).slice(0, 4);
+            s1Words = shuffleArray(globalS1WortPool).slice(0, 5);
+            s2Questions = shuffleArray(globalS2FragenPool).slice(0, 4);
             s2CurrentIndex = 0;
-            s3Questions = shuffleArray(s3Pool).slice(0, 4);
+            s3Questions = shuffleArray(globalS3BausteinPool).slice(0, 4);
             s3CurrentIndex = 0;
-            s4Questions = shuffleArray(s4Pool).slice(0, 4);
+            s4Questions = shuffleArray(globalS4VerbenPool).slice(0, 4);
             s4CurrentIndex = 0;
-            s5Questions = shuffleArray(s5PoolClean).slice(0, 5);
+            s5Questions = shuffleArray(globalS5VokabelPool).slice(0, 5);
             s5CurrentIndex = 0;
-            s6Questions = shuffleArray(s6Pool).slice(0, 4);
+            s6Questions = shuffleArray(globalS6FremdwortPool).slice(0, 4);
             s6CurrentIndex = 0;
-            s7Questions = shuffleArray(s7Pool).slice(0, 4);
+            s7Questions = shuffleArray(globalS7LautPool).slice(0, 4);
             s7CurrentIndex = 0;
             startTimer();
         }
@@ -778,4 +778,107 @@
         function nextS5Question() { s5CurrentIndex++; initStation5(); }
 
         function initStation6() {
-            document.getElementById("station-title").innerText = "Finale:
+            document.getElementById("station-title").innerText = "Finale: Höre das lange i!";
+            document.getElementById("app-progress").style.width = "84%";
+            document.getElementById("s6-feedback").innerText = "";
+            s6SelectedAnswer = "";
+
+            if (s6CurrentIndex >= s6Questions.length) {
+                switchScreen("station6", "station7"); initStation7();
+                return;
+            }
+
+            var current = s6Questions[s6CurrentIndex];
+            var blendedOptions = shuffleArray(current.options);
+
+            var poolContainer = document.getElementById("s6-pool");
+            poolContainer.innerHTML = "";
+
+            for (var i = 0; i < blendedOptions.length; i++) {
+                (function(opt) {
+                    var chip = document.createElement("div");
+                    chip.className = "word-chip"; chip.innerText = opt;
+                    chip.onclick = function() {
+                        var chips = document.querySelectorAll("#s6-pool .word-chip");
+                        for (var c = 0; c < chips.length; c++) { chips[c].classList.remove("selected"); }
+                        chip.classList.add("selected"); s6SelectedAnswer = opt;
+                    };
+                    poolContainer.appendChild(chip);
+                })(blendedOptions[i]);
+            }
+        }
+
+        function check6() {
+            totalAttemptsMade++;
+            var feedback = document.getElementById("s6-feedback");
+            if(!s6SelectedAnswer) {
+                feedback.className = "feedback wrong"; feedback.innerText = "Wähle das lange i!";
+                return;
+            }
+            if (s6SelectedAnswer === s6Questions[s6CurrentIndex].correct) {
+                feedback.className = "feedback correct"; feedback.innerText = "🎯 Ja!";
+                s6CurrentIndex++; setTimeout(function() { initStation6(); }, 1200);
+            } else {
+                feedback.className = "feedback wrong"; feedback.innerText = "Das klingt kurz.";
+            }
+        }
+
+        function initStation7() {
+            document.getElementById("station-title").innerText = "Elfmeterschießen: ß oder ss?";
+            document.getElementById("app-progress").style.width = "95%";
+            document.getElementById("s7-feedback").innerText = "";
+            document.getElementById("s7-next-btn").style.display = "none";
+
+            if (s7CurrentIndex >= s7Questions.length) {
+                document.getElementById("app-progress").style.width = "100%";
+                var finalTime = stopTimer();
+                document.getElementById("rep-time").innerText = finalTime;
+                
+                if (totalAttemptsMade < totalGoalsToMake) { totalAttemptsMade = totalGoalsToMake; }
+                var quotaPercent = Math.round((totalGoalsToMake / totalAttemptsMade) * 100);
+                document.getElementById("rep-quota").innerText = quotaPercent + "%";
+                
+                switchScreen("station7", "finish-screen");
+                document.getElementById("station-title").innerText = "WELTMEISTER! 🏆";
+                return;
+            }
+            document.getElementById("s7-word").innerText = s7Questions[s7CurrentIndex].display;
+        }
+
+        function selectS7Option(option) {
+            totalAttemptsMade++;
+            var feedback = document.getElementById("s7-feedback");
+            var current = s7Questions[s7CurrentIndex];
+
+            if (option === current.correct) {
+                feedback.className = "feedback correct"; document.getElementById("s7-word").innerText = current.full;
+                feedback.innerText = "⚽ DRIN!";
+                document.getElementById("s7-next-btn").style.display = "block";
+            } else {
+                feedback.className = "feedback wrong"; feedback.innerText = "Gehalten!";
+            }
+        }
+
+        function nextS7Question() { s7CurrentIndex++; initStation7(); }
+
+        function switchScreen(oldId, newId) {
+            document.getElementById(oldId).style.display = "none";
+            document.getElementById(newId).style.display = "flex";
+        }
+
+        function restartGame() {
+            switchScreen("finish-screen", "station1");
+            setupTurnier();
+            initStation1();
+        }
+
+        function anpfiff() {
+            setupTurnier();
+            initStation1();
+            document.getElementById("station-title").innerText = "Anpfiff! ⚽";
+        }
+
+        window.onload = anpfiff;
+    </script>
+</body>
+</html>
