@@ -322,8 +322,8 @@
         </div>
 
         <div id="station5" class="screen">
-            <div class="instruction">Welche Zwilling-Selbstlaute fehlen im Ball? ⚡</div>
-            <div class="word-display" id="s5-word">_ _</div>
+            <div class="instruction">Welche Zwilling-Selbstlaute fehlen im Wort? ⚡</div>
+            <div class="word-display" id="s5-word">..</div>
             <div class="options-grid" style="grid-template-columns: repeat(3, 1fr);">
                 <button onclick="selectS5Option('aa')">aa</button>
                 <button onclick="selectS5Option('ee')">ee</button>
@@ -346,7 +346,7 @@
         <div id="station7" class="screen">
             <div class="instruction">Ergänze das Wort richtig: ß oder ss? ⚽</div>
             <div class="hint">Höre auf den Selbstlaut davor: Ist er lang (ß) oder kurz (ss)?</div>
-            <div class="word-display" id="s7-word">_ _</div>
+            <div class="word-display" id="s7-word">..</div>
             <div class="options-grid">
                 <button onclick="selectS7Option('ß')">ß</button>
                 <button onclick="selectS7Option('ss')">ss</button>
@@ -447,15 +447,25 @@
         var s4Questions = []; var s4CurrentIndex = 0; var s4SelectedAnswer = "";
 
         var globalS5VokabelPool = [
-            { display: "die B__re", correct: "ee", full: "die Beere" }, { display: "das B__t", correct: "oo", full: "das Boot" },
-            { display: "das P__r", correct: "aa", full: "das Paar" }, { display: "der Kaff__", correct: "ee", full: "der Kaffee" },
-            { display: "das M__r", correct: "ee", full: "das Meer" }, { display: "das M__s", correct: "oo", full: "das Moos" },
-            { display: "die H__re", correct: "aa", full: "die Haare" }, { display: "d__f", correct: "oo", full: "doof" },
-            { display: "der __l", correct: "aa", full: "der Aal" }, { display: "S__l", correct: "aa", full: "der Saal" },
-            { display: "der Z__", correct: "oo", full: "der Zoo" }, { display: "der St__t", correct: "aa", full: "der Staat" },
-            { display: "die Id__", correct: "ee", full: "die Idee" }, { display: "das H__r", correct: "ee", full: "das Heer" },
-            { display: "die W__ge", correct: "aa", full: "die Waage" }, { display: "der Kl__", correct: "ee", full: "der Klee" },
-            { display: "der T__r", correct: "ee", full: "der Teer" }, { display: "l__r", correct: "ee", full: "leer" }
+            { display: "die B..re", correct: "ee", full: "die Beere" }, 
+            { display: "das B..t", correct: "oo", full: "das Boot" },
+            { display: "das P..r", correct: "aa", full: "das Paar" }, 
+            { display: "der Kaff..", correct: "ee", full: "der Kaffee" },
+            { display: "das M..r", correct: "ee", full: "das Meer" }, 
+            { display: "das M..s", correct: "oo", full: "das Moos" },
+            { display: "die H..re", correct: "aa", full: "die Haare" }, 
+            { display: "d..f", correct: "oo", full: "doof" },
+            { display: "der ..l", correct: "aa", full: "der Aal" }, 
+            { display: "der S..l", correct: "aa", full: "der Saal" },
+            { display: "der Z..", correct: "oo", full: "der Zoo" }, 
+            { display: "der St..t", correct: "aa", full: "der Staat" },
+            { display: "die Id..", correct: "ee", full: "die Idee" }, 
+            { display: "das H..r", correct: "ee", full: "das Heer" },
+            { display: "die W..ge", correct: "aa", full: "die Waage" }, 
+            { display: "der Kl..", correct: "ee", full: "der Klee" },
+            { display: "der T..r", correct: "ee", full: "der Teer" }, 
+            { display: "l..r", correct: "ee", full: "leer" }
+            // Fehler entfernt: "das Tor" mit "oo" wurde komplett gelöscht!
         ];
         var s5Questions = []; var s5CurrentIndex = 0;
 
@@ -475,17 +485,17 @@
             { options: ["Lawine", "Lippen", "Lila"], correct: "Lawine" }, 
             { options: ["Clementine", "Klick", "Liste"], correct: "Clementine" },
             { options: ["Lexikon", "Lesen", "Leiter"], correct: "Lexikon" }, 
-            { options: ["Lichtrafas", "Pinsel", "Pfeil"], correct: "Pianist" },
+            { options: ["Pianist", "Pinsel", "Pfeil"], correct: "Pianist" },
             { options: ["Spaghetti", "Spiegel", "Lippen"], correct: "Spaghetti" }, 
         ];
         var s6Questions = []; var s6CurrentIndex = 0; var s6SelectedAnswer = "";
 
         var globalS7LautPool = [
-            { display: "drau__en", correct: "ß", full: "draußen" }, { display: "gie__en", correct: "ß", full: "gießen" },
-            { display: "hei__en", correct: "ß", full: "heißen" }, { display: "flie__en", correct: "ß", full: "fließen" },
-            { display: "schlie__en", correct: "ß", full: "schließen" }, { display: "fre__en", correct: "ss", full: "fressen" },
-            { display: "kü__en", correct: "ss", full: "küssen" }, { display: "Schlu__", correct: "ss", full: "Schluss" },
-            { display: "Kürbi__e", correct: "ss", full: "Kürbisse" }, { display: "Flü__e", correct: "ss", full: "Flüsse" }
+            { display: "drau..en", correct: "ß", full: "draußen" }, { display: "gie..en", correct: "ß", full: "gießen" },
+            { display: "hei..en", correct: "ß", full: "heißen" }, { display: "flie..en", correct: "ß", full: "fließen" },
+            { display: "schlie..en", correct: "ß", full: "schließen" }, { display: "fre..en", correct: "ss", full: "fressen" },
+            { display: "kü..en", correct: "ss", full: "küssen" }, { display: "Schlu..", correct: "ss", full: "Schluss" },
+            { display: "Kürbi..e", correct: "ss", full: "Kürbisse" }, { display: "Flü..e", correct: "ss", full: "Flüsse" }
         ];
         var s7Questions = []; var s7CurrentIndex = 0;
 
