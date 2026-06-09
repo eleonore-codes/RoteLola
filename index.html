@@ -197,4 +197,266 @@
             color: #ffffff;
             font-size: 26px;
             border: 1px solid rgba(255,255,255,0.2);
-            padding
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .options-grid button:active, .options-grid button.selected {
+            background-color: #00f5d4;
+            color: #0d1b2a;
+        }
+
+        .feedback {
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 10px;
+            min-height: 25px;
+        }
+        
+        .correct { color: #00f5d4; text-shadow: 0 0 8px #00f5d4; }
+        .wrong { color: #ff5400; }
+
+        .hint {
+            font-size: 14px;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .report-card {
+            background: #0d1b2a;
+            border: 2px dashed #00f5d4;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .report-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #415a77;
+            padding-bottom: 4px;
+            font-size: 17px;
+        }
+
+        .report-tips {
+            background: #415a77;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-top: 20px;
+        }
+
+        .report-tips h4 {
+            margin: 0 0 8px 0;
+            color: #00f5d4;
+            font-size: 17px;
+        }
+        
+        .report-tips p {
+            margin: 0 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🏆 DFB-Wortmeister 2026 ⚽</h1>
+        <div id="station-title" style="font-weight: bold; color: #00f5d4;">Warte auf Anpfiff...</div>
+        
+        <div class="timer-container">
+            ⏱️ Spielzeit: <span id="game-timer">00:00</span>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress" id="app-progress"></div>
+        </div>
+    </header>
+
+    <div class="game-container">
+        
+        <div id="station1" class="screen active">
+            <div class="instruction">Bringe diese 5 scharfen S-Wörter ins ABC! <b>🏃‍♂️💨</b></div>
+            <div class="hint">Regel: Das scharfe ß wird beim Einordnen genau wie ein normales ss behandelt!</div>
+            <div class="sort-list" id="s1-list"></div>
+            <div class="feedback" id="s1-feedback"></div>
+            <button onclick="checkStation1()">Aufstellung prüfen! ⚽</button>
+        </div>
+
+        <div id="station2" class="screen">
+            <div class="instruction">Finde das passende Einzahl-Wort! 👕</div>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <span id="s2-target" style="font-size: 24px; font-weight: bold; color: #00f5d4;">Mehrzahl-Wort</span>
+            </div>
+            <div class="word-pool" id="s2-pool"></div>
+            <div class="feedback" id="s2-feedback"></div>
+            <button onclick="checkStation2()">Pass spielen! 👟</button>
+        </div>
+
+        <div id="station3" class="screen">
+            <div class="instruction">Wort-Fabrik: Setze das Riesen-Wort richtig zusammen! 🛠️</div>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <span id="s3-target" style="font-size: 26px; font-weight: bold; color: #00f5d4;">Riesen-Wort</span>
+            </div>
+            <div class="hint">Finde den 1. Baustein und den 2. Baustein!</div>
+            <div class="word-pool" id="s3-pool"></div>
+            <div class="feedback" id="s3-feedback"></div>
+            <button onclick="checkStation3()">Maschine starten! ⚙️</button>
+        </div>
+
+        <div id="station4" class="screen">
+            <div class="instruction">Taktik-Tafel: Welche Grundform gehört zur Vergangenheitsform? ⚽</div>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <span id="s4-target" style="font-size: 26px; font-weight: bold; color: #00f5d4;">er/sie...</span>
+            </div>
+            <div class="hint">Im Wörterbuch findest du Verben immer unter ihrer Grundform!</div>
+            <div class="word-pool" id="s4-pool"></div>
+            <div class="feedback" id="s4-feedback"></div>
+            <button onclick="checkStation4()">Flanke schlagen! 🏃‍♂️</button>
+        </div>
+
+        <div id="station5" class="screen">
+            <div class="instruction">Welche Zwilling-Selbstlaute fehlen im Ball? ⚡</div>
+            <div class="word-display" id="s5-word">_ _</div>
+            <div class="options-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <button onclick="selectS5Option('aa')">aa</button>
+                <button onclick="selectS5Option('ee')">ee</button>
+                <button onclick="selectS5Option('oo')">oo</button>
+            </div>
+            <div class="feedback" id="s5-feedback"></div>
+            <button style="display:none;" id="s5-next-btn" onclick="nextS5Question()">Nächster Ball ⚽</button>
+        </div>
+
+        <div id="station6" class="screen">
+            <div class="instruction">Welches Wort hat ein lang gesprochenes i ohne e? 🕵️‍♂️</div>
+            <div style="text-align: center; margin-bottom: 10px; font-weight: bold; color: #00f5d4;">
+                Sprecht das Wort laut aus! Höre das lange i!
+            </div>
+            <div class="word-pool" id="s6-pool"></div>
+            <div class="feedback" id="s6-feedback"></div>
+            <button onclick="check6()">Ins Tor schießen! 🥅</button>
+        </div>
+
+        <div id="station7" class="screen">
+            <div class="instruction">Ergänze das Wort richtig: ß oder ss? ⚽</div>
+            <div class="hint">Höre auf den Selbstlaut davor: Ist er lang (ß) oder kurz (ss)?</div>
+            <div class="word-display" id="s7-word">_ _</div>
+            <div class="options-grid">
+                <button onclick="selectS7Option('ß')">ß</button>
+                <button onclick="selectS7Option('ss')">ss</button>
+            </div>
+            <div class="feedback" id="s7-feedback"></div>
+            <button style="display:none;" id="s7-next-btn" onclick="nextS7Question()">Nächstes Wort 🏃‍♂️</button>
+        </div>
+
+        <div id="finish-screen" class="screen">
+            <div class="instruction" style="text-align: center; font-size: 24px; color: #00f5d4;">🎉 TURNIERSIEG! 🎉</div>
+            
+            <div class="report-card">
+                <div style="text-align: center; font-size: 20px; margin-bottom: 15px; color: #00f5d4; font-weight: bold;">📋 DEINE WM-KARTE</div>
+                
+                <div class="report-line"><span>⏱️ Spielzeit:</span><span id="rep-time" style="color:#00f5d4; font-weight:bold;">00:00</span></div>
+                <div class="report-line"><span>🎯 Trefferquote:</span><span id="rep-quota" style="color:#00f5d4; font-weight:bold;">100%</span></div>
+                <div class="report-line"><span>⚽ Alle Stationen:</span><span style="color:#00f5d4; font-weight:bold;">Geschafft! ⭐</span></div>
+                
+                <div class="report-tips">
+                    <h4>💡 Profi-Tricks für die Arbeit:</h4>
+                    
+                    <p><b>1. Sortieren</b><br>Das scharfe <b>ß</b> wird beim ABC genau wie <b>ss</b> sortiert.</p>
+                    
+                    <p><b>2. Verben suchen</b><br>Formen wie <i>er fing</i> findest du im Heft bei der Grundform <i>fangen</i>.</p>
+                    
+                    <p><b>3. ß oder ss</b><br>Nach <b>langem</b> Laut kommt <b>ß</b> (<i>gießen</i>).<br>Nach <b>kurzem</b> Laut kommt <b>ss</b> (<i>küssen</i>).</p>
+                    
+                    <p><b>4. Langes i</b><br>Wörter wie <i>Kino, Maschine</i> haben ein langes i, aber **kein e**.</p>
+                </div>
+            </div>
+
+            <button onclick="restartGame()">Neues Spiel 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        var totalSeconds = 0;
+        var timerInterval = null;
+        
+        var totalGoalsToMake = 25; 
+        var totalAttemptsMade = 0; 
+
+        var s1Pool = ["draußen", "gießen", "süß", "heißen", "fließen", "schließen", "fressen", "küssen", "Kürbisse", "Flüsse", "Füchse", "Schluss", "böse", "blass"];
+        var s1Words = [];
+
+        var s2Pool = [
+            { plural: "Bücher", singular: "das Buch" }, { plural: "Gärten", singular: "der Garten" },
+            { plural: "Fahrräder", singular: "das Fahrrad" }, { plural: "Tücher", singular: "das Tuch" },
+            { plural: "Kämme", singular: "der Kamm" }, { plural: "Eier", singular: "das Ei" },
+            { plural: "Fahrten", singular: "die Fahrt" }, { plural: "Blüten", singular: "die Blüte" },
+            { plural: "Wälder", singular: "der Wald" }, { plural: "Tränen", singular: "die Träne" },
+            { plural: "Schwestern", singular: "die Schwester" }, { plural: "Flüsse", singular: "der Fluss" },
+            { plural: "Gefahren", singular: "die Gefahr" }, { plural: "Koffer", singular: "der Koffer" },
+            { plural: "Fahrkarten", singular: "die Fahrkarte" }, { plural: "Gesetze", singular: "das Gesetz" },
+            { plural: "Gläser", singular: "das Glas" }, { plural: "Kinder", singular: "das Kind" },
+            { plural: "Füchse", singular: "der Fuchs" }, { plural: "Kürbisse", singular: "der Kürbis" },
+            { plural: "Pilze", singular: "der Pilz" }, { plural: "Götter", singular: "der Gott" }
+        ];
+        var s2Questions = []; var s2CurrentIndex = 0; var s2SelectedAnswer = "";
+
+        var s3Pool = [
+            { full: "Waldarbeiter", part1: "Wald", part2: "arbeiter" },
+            { full: "Laubbäume", part1: "Laub", part2: "bäume" },
+            { full: "Buntspecht", part1: "Bunt", part2: "specht" },
+            { full: "Hinweisschild", part1: "Hinweis", part2: "schild" },
+            { full: "Naturlehrpfad", part1: "Naturlehr", part2: "pfad" },
+            { full: "Futterkrippe", part1: "Futter", part2: "krippe" },
+            { full: "Wildschweine", part1: "Wild", part2: "schweine" },
+            { full: "Rehkitz", part1: "Reh", part2: "kitz" }
+        ];
+        var s3Questions = []; var s3CurrentIndex = 0; var s3Selected1 = ""; var s3Selected2 = "";
+
+        var s4Pool = [
+            { past: "er fing", base: "fangen" }, { past: "sie zankten", base: "zanken" },
+            { past: "er vergaß", base: "vergessen" }, { past: "sie warfen", base: "werfen" },
+            { past: "er nahm", base: "nehmen" }, { past: "sie wuschen", base: "waschen" },
+            { past: "es flatterte", base: "flattern" }, { past: "sie baten", base: "bitten" },
+            { past: "er wusste", base: "wissen" }, { past: "sie halfen", base: "helfen" },
+            { past: "er machte", base: "machen" }, { past: "sie flogen", base: "fliegen" },
+            { past: "er sah", base: "sehen" }, { past: "es gefror", base: "frieren" },
+            { past: "er schnitt", base: "schneiden" }, { past: "er aß", base: "essen" },
+            { past: "sie riefen", base: "rufen" }, { past: "er log", base: "lügen" },
+            { past: "es brannte", base: "brennen" }, { past: "sie erschrak", base: "erschrecken" },
+            { past: "er saß", base: "sitzen" }, { past: "er verzieh", base: "verzeihen" }
+        ];
+        var s4Questions = []; var s4CurrentIndex = 0; var s4SelectedAnswer = "";
+
+        var s5PoolClean = [
+            { display: "die B_ _re", correct: "ee", full: "die Beere" }, { display: "das B_ _t", correct: "oo", full: "das Boot" },
+            { display: "das P_ _r", correct: "aa", full: "das Paar" }, { display: "der Kaff_ _", correct: "ee", full: "der Kaffee" },
+            { display: "das M_ _r", correct: "ee", full: "das Meer" }, { display: "das M_ _s", correct: "oo", full: "das Moos" },
+            { display: "die H_ _re", correct: "aa", full: "die Haare" }, { display: "d_ _f", correct: "oo", full: "doof" },
+            { display: "der Z_ _", correct: "oo", full: "der Zoo" }, { display: "der St_ _t", correct: "aa", full: "der Staat" },
+            { display: "das T_ _r", correct: "oo", full: "das Tor" }, { display: "der A_ _l", correct: "aa", full: "der Aal" },
+            { display: "die Id_ _", correct: "ee", full: "die Idee" }, { display: "das H_ _r", correct: "ee", full: "das Heer" },
+            { display: "die W_ _ge", correct: "aa", full: "die Waage" }, { display: "der Kl_ _", correct: "ee", full: "der Klee" },
+            { display: "der T_ _r", correct: "ee", full: "der Teer" }, { display: "l_ _r", correct: "ee", full: "leer" }
+        ];
+        var s5Questions = []; var s5CurrentIndex = 0;
+
+        var s6Pool = [
+            { options: ["Kino", "Kissen", "Kind"], correct: "Kino" }, 
+            { options: ["Mandarinen", "Mitte", "Tinte"], correct: "Mandarinen" },
+            { options: ["Maschine", "Milch", "Pille"], correct: "Maschine" }, 
+            { options: ["Apfelsinen", "Finger", "Lippe"], correct: "Apfelsinen" },
+            { options: ["Rosinen", "Riss", "Winter"], correct: "Rosinen" }, 
+            { options: ["Kusine", "Küche", "Kiste"], correct: "Kusine" },
+            { options: ["Pralinen", "Prisma", "Pirat"], correct: "Pralinen" }, 
+            { options: ["Medizin", "Mitmach", "Milli"], correct: "Medizin" },
+            { options: ["Linie", "Licht", "Links"], correct: "Linie" }, 
+            { options: ["Tiger", "Tisch", "Tipp"], correct: "Tiger" },
+            { options:
