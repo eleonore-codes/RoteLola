@@ -2,130 +2,297 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Station 5 - Scharfe S-Wörter</title>
-    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DFB-Wortmeister 2026 - Kapitel 5</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Verdana', 'Arial', sans-serif; }
-        body { background-color: #0d1b2a; color: #ffffff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; font-size: 19px; line-height: 1.7; letter-spacing: 0.07em; }
-        header { text-align: center; margin-bottom: 15px; width: 100%; max-width: 500px; }
-        h1 { font-size: 22px; color: #00f5d4; margin: 5px 0; text-transform: uppercase; text-shadow: 0 0 10px rgba(0, 245, 212, 0.4); }
-        .timer-container { background-color: #1b263b; border: 2px solid #00f5d4; padding: 8px 15px; border-radius: 20px; display: inline-block; margin: 8px 0; font-size: 20px; font-weight: bold; color: #00f5d4; }
-        .progress-bar { width: 100%; background-color: #415a77; height: 15px; border-radius: 10px; overflow: hidden; margin-top: 10px; }
-        .progress { height: 100%; background-color: #00f5d4; width: 0%; transition: width 0.3s ease; }
-        .game-container { background: #1b263b; border-radius: 15px; padding: 20px; width: 100%; max-width: 500px; box-shadow: 0 0 15px rgba(0, 245, 212, 0.4); min-height: 460px; display: flex; flex-direction: column; justify-content: space-between; border: 2px solid #00f5d4; }
-        .screen { display: none; flex-direction: column; height: 100%; }
-        .screen.active { display: flex; }
-        .instruction { font-weight: bold; margin-bottom: 12px; color: #ffffff; font-size: 19px; }
-        button { background-color: #00f5d4; color: #0d1b2a; border: none; padding: 15px 20px; font-size: 19px; font-weight: bold; border-radius: 25px; cursor: pointer; margin-top: 15px; width: 100%; box-shadow: 0 4px 10px rgba(0, 245, 212, 0.2); }
-        .word-display { font-size: 32px; font-weight: bold; letter-spacing: 0.15em; text-align: center; margin: 15px 0; background: #0d1b2a; padding: 12px; border-radius: 8px; color: #00f5d4; border: 2px solid #00f5d4; }
-        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .options-grid button { margin: 0; background-color: #415a77; color: #ffffff; font-size: 26px; border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; }
-        .options-grid button:active, .options-grid button.selected { background-color: #00f5d4; color: #0d1b2a; }
-        .feedback { text-align: center; font-weight: bold; font-size: 18px; margin-top: 10px; min-height: 25px; }
-        .correct { color: #00f5d4; text-shadow: 0 0 8px #00f5d4; }
-        .wrong { color: #ff5400; }
+        /* DFB Arena & Dyslexie-optimiertes Design */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0B192C; /* Dunkelblauer Arena-Hintergrund */
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 0.07em; /* Dyslexie-Support: Mehr Zeichenabstand */
+            color: #FFFFFF;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Stadion-Anzeigetafel */
+        .scoreboard {
+            background-color: #1E3E62;
+            border-bottom: 4px solid #00F2FE; /* Metallic-Türkis Accent */
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .score-display {
+            color: #00F2FE;
+            font-size: 1.5rem;
+        }
+
+        /* Spielfeld / Haupt-Anzeige */
+        .pitch {
+            height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .instruction {
+            font-size: 1.1rem;
+            color: #A0BFE0;
+            margin-bottom: 15px;
+            min-height: 2.5rem;
+        }
+
+        .word-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: rgba(30, 62, 98, 0.6);
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: 2px dashed #00F2FE;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Visuelle Trennungshilfe für Silbenkerne */
+        .syllable-dot {
+            color: #00F2FE;
+            padding: 0 2px;
+        }
+
+        /* Interaktions-Zone (Optimiert für Daumen-Radius iPhone XR) */
+        .controls-zone {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 45vh;
+            background: linear-gradient(to top, #0B192C 85%, transparent);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        /* Trikot- und Arena-Buttons */
+        .action-btn {
+            background: #1E3E62;
+            border: 2px solid #00F2FE;
+            color: #FFFFFF;
+            border-radius: 12px;
+            padding: 18px 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.1s ease;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+            background: #00F2FE;
+            color: #0B192C;
+        }
+
+        /* Feedback-Overlay */
+        .feedback-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(11, 25, 44, 0.9);
+            z-index: 10;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .feedback-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .feedback-correct { color: #00FF66; }
+        .feedback-wrong { color: #FF3366; }
+
+        /* Zurück zum Turnierbaum */
+        .nav-back {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: none;
+            border: 1px solid #A0BFE0;
+            color: #A0BFE0;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>🏆 Wortmeister: Station 5 ⚽</h1>
-        <div id="station-title" style="font-weight: bold; color: #00f5d4;">Bereite Arena vor...</div>
-        <div class="timer-container">⏱️ Spielzeit: <span id="game-timer">00:00</span></div>
-        <div class="progress-bar"><div class="progress" id="app-progress"></div></div>
-    </header>
 
-    <div class="game-container">
-        <div id="spiel-screen" class="screen active">
-            <div class="instruction">Ergänze das Wort richtig: ß oder ss? ⚽</div>
-            <div class="word-display" id="s5-word">..</div>
-            <div class="options-grid">
-                <button onclick="selectOption('ß')">ß</button>
-                <button onclick="selectOption('ss')">ss</button>
-            </div>
-            <div class="feedback" id="s5-feedback"></div>
-            <button style="display:none;" id="s5-next-btn" onclick="nextQuestion()">Nächstes Wort 🏃‍♂️</button>
-        </div>
+    <button class="nav-back" onclick="window.location.href='index.html'">🏆 Menü</button>
 
-        <div id="finish-screen" class="screen">
-            <div class="instruction" style="text-align: center; font-size: 24px; color: #00f5d4;">🎉 KAPITEL 5 GEWONNEN! 🎉</div>
-            <div class="word-display" style="font-size: 18px; line-height: 1.6; text-align: left; letter-spacing: normal;">
-                ⏱️ Spielzeit: <span id="rep-time" style="color:#00f5d4; font-weight:bold;">00:00</span><br>
-                🎯 Trefferquote: <span id="rep-quota" style="color:#00f5d4; font-weight:bold;">100%</span><br><br>
-                <b>📋 Trainer-Wissen:</b><br>
-                • Nach <b>langem</b> Vokal schreiben wir <b>ß</b> (Straße).<br>
-                • Nach <b>kurzem</b> Vokal schreiben wir <b>ss</b> (Flüsse).
+    <div class="scoreboard">
+        Kapitel 5: Der Wörterbuch-Trainer | <span class="score-display">⚽ Tor: <span id="score-val">0</span> / 5</span>
+    </div>
+
+    <div class="pitch">
+        <div class="instruction" id="game-instruction">Lade Trainingsspiel...</div>
+        <div class="word-display" id="game-word">- - -</div>
+    </div>
+
+    <div class="controls-zone">
+        <div class="btn-container" id="options-box">
             </div>
-            <button onclick="window.location.href='index.html'">Zurück zum Hauptmenü 🏠</button>
-        </div>
+    </div>
+
+    <div class="feedback-overlay" id="feedback-screen">
+        <div class="feedback-text" id="feedback-msg">TOR!</div>
     </div>
 
     <script>
-        var totalSeconds = 0; var timerInterval = null;
-        var totalGoalsToMake = 5; var totalAttemptsMade = 0;
-        var pool = [
-            { d: "gro..", c: "ß", f: "groß" }, { d: "kü..en", c: "ss", f: "küssen" },
-            { d: "drau..en", c: "ß", f: "draußen" }, { d: "Flü..e", c: "ss", f: "Flüsse" },
-            { d: "Stra..e", c: "ß", f: "Straße" }
-        ];
-        var questions = []; var currentIndex = 0;
+        // --- REINER ES5 STANDARD ---
+        // Wortschatz-Datenbank für Kapitel 5 aus den Original-Lola-Vorlagen
+        var dataset = {
+            // Spieltyp 1: Mehrzahl -> Einzahl (Wörterbuch-Suche)
+            singularPlural: [
+                { display: "Fahrräder", correct: "das Fahrrad", wrong: "die Fahrrads" },
+                { display: "Kämme", correct: "der Kamm", wrong: "die Kämme" },
+                { display: "Gärten", correct: "der Garten", wrong: "das Garten" },
+                { display: "Tücher", correct: "das Tuch", wrong: "die Tücher" },
+                { display: "Tränen", correct: "die Träne", wrong: "der Tränen" }
+            ],
+            // Spieltyp 2: Verben -> Grundform finden
+            verbInfinitive: [
+                { display: "er fälschte", correct: "fälschen", wrong: "fälschen" }, // Falschschreibung wird im Typ abgefangen
+                { display: "sie fressen", correct: "fressen", wrong: "fresen" },
+                { display: "er aß", correct: "essen", wrong: "asen" },
+                { display: "sie fielen", correct: "fallen", wrong: "fieln" },
+                { display: "wir küssten", correct: "küssen", wrong: "küsten" }
+            ],
+            // Spieltyp 3: Alphabetischer Nachfolger
+            abcOrder: [
+                { display: "Berg", correct: "Dorf", wrong: "Anfang" }, // Was kommt danach?
+                { display: "Garten", correct: "Hase", wrong: "Feuer" },
+                { display: "Licht", correct: "Netz", wrong: "Keks" },
+                { display: "Ort", correct: "Punkt", wrong: "Dorf" }
+            ],
+            // Spieltyp 4: Schiri-Videobeweis (Falschschreibungen entlarven)
+            varCheck: [
+                { display: "Fäuer", correct: "Feuer", wrong: "Fäuer" },
+                { display: "Berk", correct: "Berg", wrong: "Berk" },
+                { display: "Schlus", correct: "Schluss", wrong: "Schlus" },
+                { display: "Zait", correct: "Zeit", wrong: "Zait" }
+            ]
+        };
 
-        function startTimer() {
-            if(timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(function() {
-                totalSeconds++;
-                var mins = Math.floor(totalSeconds / 60); var secs = totalSeconds % 60;
-                document.getElementById("game-timer").innerText = (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
-            }, 1000);
-        }
+        var currentRound = 0;
+        var maxRounds = 5;
+        var score = 0;
+        var currentAnswer = "";
+        
+        // Tracking-Variablen für das globale Meilenstein-Zeugnis
+        var chapterErrors = 0;
 
-        function shuffleArray(arr) {
-            var temp = arr.slice();
-            for (var i = temp.length - 1; i > 0; i--) {
+        function shuffleArray(array) {
+            for (var i = array.length - 1; i > 0; i--) {
                 var j = Math.floor(Math.random() * (i + 1));
-                var b = temp[i]; temp[i] = temp[j]; temp[j] = b;
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
             }
-            return temp;
+            return array;
         }
 
         function initGame() {
-            questions = shuffleArray(pool).slice(0, totalGoalsToMake);
-            startTimer(); showQuestion();
+            currentRound = 0;
+            score = 0;
+            document.getElementById("score-val").innerHTML = score;
+            nextTask();
         }
 
-        function showQuestion() {
-            document.getElementById("station-title").innerText = "Kapitel 5 - Runde " + (currentIndex + 1) + "/" + totalGoalsToMake;
-            document.getElementById("app-progress").style.width = ((currentIndex / totalGoalsToMake) * 100) + "%";
-            document.getElementById("s5-feedback").innerText = "";
-            document.getElementById("s5-next-btn").style.display = "none";
-            document.getElementById("s5-word").innerText = questions[currentIndex].d;
-        }
-
-        function selectOption(opt) {
-            totalAttemptsMade++;
-            var fb = document.getElementById("s5-feedback");
-            var cur = questions[currentIndex];
-            if(opt === cur.c) {
-                fb.className = "feedback correct"; fb.innerText = "⚽ TOOOOR!";
-                document.getElementById("s5-word").innerText = cur.f;
-                document.getElementById("s5-next-btn").style.display = "block";
-            } else {
-                fb.className = "feedback wrong"; fb.innerText = "Daneben!";
+        function nextTask() {
+            if (currentRound >= maxRounds) {
+                showEndScreen();
+                return;
             }
-        }
 
-        function nextQuestion() {
-            currentIndex++;
-            if(currentIndex >= totalGoalsToMake) {
-                clearInterval(timerInterval);
-                document.getElementById("spiel-screen").style.display = "none";
-                document.getElementById("finish-screen").style.display = "flex";
-                document.getElementById("rep-time").innerText = document.getElementById("game-timer").innerText;
-                var quota = Math.round((totalGoalsToMake / totalAttemptsMade) * 100);
-                document.getElementById("rep-quota").innerText = quota + "%";
-            } else { showQuestion(); }
-        }
-        window.onload = initGame;
-    </script>
-</body>
-</html>
+            currentRound++;
+            
+            // Zufälligen Spieltyp wählen (1 bis 4) für maximale didaktische Variation
+            var typeSelector = Math.floor(Math.random() * 4) + 1;
+            
+            var instructionEl = document.getElementById("game-instruction");
+            var wordEl = document.getElementById("game-word");
+            var optionsBox = document.getElementById("options-box");
+            
+            optionsBox.innerHTML = ""; // Box leeren
+
+            var item;
+            if (typeSelector === 1) {
+                // Typ 1: Mehrzahl-Tackling
+                var list1 = dataset.singularPlural;
+                item = list1[Math.floor(Math.random() * list1.length)];
+                
+                instructionEl.innerHTML = "Wie suchst du die Mehrzahl im Wörterbuch?";
+                wordEl.innerHTML = item.display;
+                currentAnswer = item.correct;
+                
+                createButtons(item.correct, item.wrong);
+
+            } else if (typeSelector === 2) {
+                // Typ 2: Verb-Abseitsfalle (Grundform)
+                var list2 = dataset.verbInfinitive;
+                item = list2[Math.floor(Math.random() * list2.length)];
+                
+                instructionEl.innerHTML = "Finde die Grundform (Infinitiv) des Verbs:";
+                wordEl.innerHTML = item.display;
+                currentAnswer = item.correct;
+                
+                createButtons(item.correct, item.wrong);
+
+            } else if (typeSelector === 3) {
+                // Typ 3: ABC-Reihenfolge (Welches Wort folgt im Wörterbuch danach?)
+                var list3 = dataset.abcOrder;
+                item = list3[Math.floor(Math.random() * list3.length)];
+                
+                instructionEl.innerHTML = "Welches Wort kommt im Alphabet <span style='color:#00F2FE;'>NACH</span> diesem?";
+                wordEl.innerHTML = item.display;
+                currentAnswer = item.correct;
+                
+                createButtons(item.correct, item.wrong);
+
+            } else {
+                // Typ 4: Schiri-Videobeweis (Fehler korrigieren)
+                var list4 = dataset.varCheck;
+                item = list4[Math.floor(Math.random() * list4.length)];
+                
+                instructionEl.
