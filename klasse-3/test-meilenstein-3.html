@@ -1,1 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meilenstein-Test 3</title>
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <style>
+        * { box-sizing: border-box; font-family: 'Verdana', 'Arial', sans-serif; }
+        body { background-color: #0d1b2a; color: #ffffff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; font-size: 19px; line-height: 1.7; letter-spacing: 0.07em; }
+        header { text-align: center; margin-bottom: 15px; width: 100%; max-width: 500px; }
+        h1 { font-size: 22px; color: #00f5d4; margin: 5px 0; text-transform: uppercase; text-shadow: 0 0 10px rgba(0, 245, 212, 0.4); }
+        .timer-container { background-color: #1b263b; border: 2px solid #00f5d4; padding: 8px 15px; border-radius: 20px; display: inline-block; margin: 8px 0; font-size: 20px; font-weight: bold; color: #00f5d4; }
+        .progress-bar { width: 100%; background-color: #415a77; height: 15px; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .progress { height: 100%; background-color: #00f5d4; width: 0%; transition: width 0.3s ease; }
+        .game-container { background: #1b263b; border-radius: 15px; padding: 20px; width: 100%; max-width: 500px; box-shadow: 0 0 15px rgba(0, 245, 212, 0.4); min-height: 460px; display: flex; flex-direction: column; justify-content: space-between; border: 2px solid #00f5d4; }
+        .screen { display: none; flex-direction: column; height: 100%; }
+        .screen.active { display: flex; }
+        .instruction { font-weight: bold; margin-bottom: 12px; color: #ffffff; font-size: 19px; }
+        button { background-color: #00f5d4; color: #0d1b2a; border: none; padding: 15px 20px; font-size: 19px; font-weight: bold; border-radius: 25px; cursor: pointer; margin-top: 15px; width: 100%; box-shadow: 0 4px 10px rgba(0, 245, 212, 0.2); }
+        .word-display { font-size: 32px; font-weight: bold; text-align: center; margin: 15px 0; background: #0d1b2a; padding: 12px; border-radius: 8px; color: #00f5d4; border: 2px solid #00f5d4; }
+        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .options-grid button { margin: 0; background-color: #415a77; color: #ffffff; font-size: 22px; border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center; }
+        .feedback { text-align: center; font-weight: bold; font-size: 18px; margin-top: 10px; min-height: 25px; }
+        .correct { color: #00f5d4; text-shadow: 0 0 8px #00f5d4; }
+        .wrong { color: #ff5400; }
+        .report-card { background: #0d1b2a; border: 2px dashed #00f5d4; border-radius: 10px; padding: 15px; margin-top: 10px; line-height: 1.8; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏆 Meilenstein-Test 3 ⚽</h1>
+        <div id="station-title" style="font-weight: bold; color: #00f5d4;">Bereite Arena vor...</div>
+        <div class="timer-container">⏱️ Spielzeit: <span id="game-timer">00:00</span></div>
+        <div class="progress-bar"><div class="progress" id="app-progress"></div></div>
+    </header>
 
+    <div class="game-container">
+        <div id="spiel-screen" class="screen active">
+            <div class="instruction" id="test-instr">Frage laden...</div>
+            <div class="word-display" id="test-word">..</div>
+            <div class="options-grid">
+                <button id="opt1" onclick="selectOption(1)">Form 1</button>
+                <button id="opt2" onclick="selectOption(2)">Form 2</button>
+            </div>
+            <div class="feedback" id="test-feedback"></div>
+            <button style="display:none;" id="test-next-btn" onclick="nextQuestion()">Nächster Spielzug 🏃‍♂️</button>
+        </div>
+
+        <div id="finish-screen" class="screen">
+            <div class="instruction" style="text-align: center; font-size: 24px; color: #00f5d4;">🎉 TEST 3 BEENDET! 🎉</div>
+            <div class="report-card">
+                <p>⏱️ Spielzeit: <span id="rep-time" style="color:#00f5d4; font-weight:bold;">00:00</span></p>
+                <p>🎯 Trefferquote: <span id="rep-quota" style="color:#00f5d4; font-weight:bold;">100%</span></p>
+                <div id="rep-feedback-box" style="margin-top: 15px;"></div>
+            </div>
+            <button onclick="window.location.href='index.html'">Zum Hauptmenü 🏠</button>
+        </div>
+    </div>
+
+    <script>
+        var totalSeconds = 0; var timerInterval = null;
+        var totalGoalsToMake = 4; var totalAttemptsMade = 0;
+        var errorsK5 = 0; var errorsK6 = 0;
+
+        var pool = [
+            { i: "Langer Vokal! Welches S folgt?", w: "gro..", o1: "ss", o2: "ß", c: 2, k: 5 },
+            { i: "Kurzer Vokal! Welches S folgt?", w: "kü..en", o1: "ss", o2: "ß", c: 1, k: 5 },
+            { i: "Welcher Zwilling schwimmt im Meer?", o1: "oo", o2: "ee", c: 2, k: 6 },
+            { i: "Welcher Zwilling fährt als Schiff?", o1: "oo", o2: "aa", c: 1, k: 6 }
+        ];
+        var questions = []; var currentIndex = 0;
+
+        function startTimer() {
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                var mins = Math.floor(totalSeconds / 60); var secs = totalSeconds % 60;
+                document.getElementById("game-timer").innerText = (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+            }, 1000);
+        }
+
+        function shuffleArray(arr) {
+            var temp = arr.slice();
+            for (var i = temp.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var b = temp[i]; temp[i] = temp[j]; temp[j] = b;
+            }
+            return temp;
+        }
+
+        function initGame() {
+            questions = shuffleArray(pool);
+            startTimer(); showQuestion();
+        }
+
+        function showQuestion() {
+            document.getElementById("station-title").innerText = "Test 3 - Runde " + (currentIndex + 1) + "/" + totalGoalsToMake;
+            document.getElementById("app-progress").style.width = ((currentIndex / totalGoalsToMake) * 100) + "%";
+            document.getElementById("test-feedback").innerText = "";
+            document.getElementById("test-next-btn").style.display = "none";
+            var cur = questions[currentIndex];
+            document.getElementById("test-instr").innerText = cur.i;
+            document.getElementById("test-word").innerText = cur.w || "Boot/Meer?";
+            document.getElementById("opt1").innerText = cur.o1;
+            document.getElementById("opt2").innerText = cur.o2;
+        }
+
+        function selectOption(num) {
+            totalAttemptsMade++;
+            var fb = document.getElementById("test-feedback");
+            var cur = questions[currentIndex];
+            if(num === cur.c) {
+                fb.className = "feedback correct"; fb.innerText = "⚽ TREFFER!";
+                document.getElementById("test-next-btn").style.display = "block";
+            } else {
+                if(cur.k === 5) errorsK5++; else errorsK6++;
+                fb.className = "feedback wrong"; fb.innerText = "Gehalten!";
+            }
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if(currentIndex >= totalGoalsToMake) {
+                clearInterval(timerInterval);
+                document.getElementById("app-progress").style.width = "100%";
+                document.getElementById("spiel-screen").style.display = "none";
+                document.getElementById("finish-screen").style.display = "flex";
+                document.getElementById("rep-time").innerText = document.getElementById("game-timer").innerText;
+                var quota = Math.round((totalGoalsToMake / totalAttemptsMade) * 100);
+                document.getElementById("rep-quota").innerText = quota + "%";
+                
+                var box = document.getElementById("rep-feedback-box");
+                if(errorsK5 > 0) {
+                    box.innerHTML += "<p>• Scharfe S-Laute üben:<br><button onclick=\"window.location.href='kapitel-5.html'\">🔄 Kapitel 5 wiederholen</button></p>";
+                }
+                if(errorsK6 > 0) {
+                    box.innerHTML += "<p>• Vokalzwillinge üben:<br><button onclick=\"window.location.href='kapitel-6.html'\">🔄 Kapitel 6 wiederholen</button></p>";
+                }
+                if(errorsK5 === 0 && errorsK6 === 0) {
+                    box.innerHTML = "<p style='color:#00f5d4; font-weight:bold;'>⭐ Meisterhaft! Du hast alle Vokale und S-Laute voll im Griff!</p>";
+                }
+            } else { showQuestion(); }
+        }
+        window.onload = initGame;
+    </script>
+</body>
+</html>
