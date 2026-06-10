@@ -15,7 +15,7 @@
         .menu-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
         button { background-color: #415a77; color: #ffffff; border: 2px solid rgba(255,255,255,0.2); padding: 14px 20px; font-size: 19px; font-weight: bold; border-radius: 25px; cursor: pointer; width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; }
         button:active { background-color: #00f5d4; color: #0d1b2a; border-color: #00f5d4; }
-        button.test-btn { background-color: #0d1b2a; color: #00f5d4; border: 2px solid #00f5d4; }
+        button.test-btn { background-color: #0d1b2a; color: #00f5d4; border: 2px solid #00f5d4; margin-top: 5px; }
         .badge { background: rgba(0, 0, 0, 0.3); padding: 2px 10px; border-radius: 10px; font-size: 14px; color: #00f5d4; }
     </style>
 </head>
@@ -25,25 +25,32 @@
     </header>
 
     <div class="menu-container">
-        <div class="section-title">🏃‍♂️ Vorrunde: Kapitel 1 - 4</div>
+        <div class="section-title">🏃‍♂️ Runde 1: Kapitel 1 & 2</div>
         <div class="menu-grid">
             <button onclick="window.location.href='kapitel-1.html'"><span>📕 Kapitel 1: Silbenarbeit</span> <span class="badge">S1</span></button>
             <button onclick="window.location.href='kapitel-2.html'"><span>📘 Kapitel 2: Ableiten & Verlängern</span> <span class="badge">S2</span></button>
-            <button onclick="window.location.href='kapitel-3.html'"><span>📙 Kapitel 3: Besondere Laute</span> <span class="badge">S3</span></button>
+            <button class="test-btn" onclick="window.location.href='test-meilenstein-1.html'"><span>🏆 Meilenstein-Test 1 (Kap 1/2)</span> <span class="badge">TEST 1</span></button>
+        </div>
+
+        <div class="section-title">⚡ Runde 2: Kapitel 3 & 4</div>
+        <div class="menu-grid">
+            <button onclick="window.location.href='kapitel-3.html'"><span>导 Kapitel 3: Besondere Laute</span> <span class="badge">S3</span></button>
             <button onclick="window.location.href='kapitel-4.html'"><span>📗 Kapitel 4: Kurze Vokale</span> <span class="badge">S4</span></button>
+            <button class="test-btn" onclick="window.location.href='test-meilenstein-2.html'"><span>🏆 Meilenstein-Test 2 (Kap 3/4)</span> <span class="badge">TEST 2</span></button>
         </div>
 
         <div class="section-title">💪 Zwischenrunde: Kapitel 5 & 6</div>
         <div class="menu-grid">
             <button onclick="window.location.href='kapitel-5.html'"><span>📕 Kapitel 5: Scharfes ß / ss</span> <span class="badge">S5</span></button>
             <button onclick="window.location.href='kapitel-6.html'"><span>📘 Kapitel 6: Vokal-Zwillinge</span> <span class="badge">S6</span></button>
+            <button class="test-btn" onclick="window.location.href='test-meilenstein-3.html'"><span>🏆 Meilenstein-Test 3 (Kap 5/6)</span> <span class="badge">TEST 3</span></button>
         </div>
 
         <div class="section-title">🔥 Finalrunde: Kapitel 7 & 8</div>
         <div class="menu-grid">
-            <button onclick="window.location.href='kapitel-7.html'"><span>📙 Kapitel 7: Großschreibung</span> <span class="badge">S7</span></button>
+            <button onclick="window.location.href='kapitel-7.html'"><span>导 Kapitel 7: Großschreibung</span> <span class="badge">S7</span></button>
             <button onclick="window.location.href='kapitel-8.html'"><span>📗 Kapitel 8: Fehler berichtigen</span> <span class="badge">S8</span></button>
-            <button class="test-btn" onclick="window.location.href='test-meilenstein-3.html'"><span>🏆 Meilenstein-Test: Kap 7 & 8</span> <span class="badge">TEST</span></button>
+            <button class="test-btn" onclick="window.location.href='test-meilenstein-4.html'"><span>🏆 Meilenstein-Test 4 (Kap 7/8)</span> <span class="badge">TEST 4</span></button>
         </div>
     </div>
 </body>
