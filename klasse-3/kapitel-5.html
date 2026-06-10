@@ -295,4 +295,89 @@
                 var list4 = dataset.varCheck;
                 item = list4[Math.floor(Math.random() * list4.length)];
                 
-                instructionEl.
+                instructionEl.innerHTML = "⚠️ Schiri-Videobeweis! Klicke die richtige Schreibweise:";
+                wordEl.innerHTML = item.display;
+                currentAnswer = item.correct;
+                
+                createButtons(item.correct, item.wrong);
+            }
+        }
+
+        function createButtons(correctText, wrongText) {
+            var optionsBox = document.getElementById("options-box");
+            var choices = [correctText, wrongText];
+            choices = shuffleArray(choices);
+
+            // ES5-konformer Aufbau der Buttons im Daumensektor
+            var row = document.createElement("div");
+            row.className = "btn-row";
+
+            for (var i = 0; i < choices.length; i++) {
+                var btn = document.createElement("button");
+                btn.className = "action-btn";
+                btn.innerHTML = choices[i];
+                // Wichtig: kein let/const, Übergabe des Wertes via Funktions-Scope
+                btn.onclick = (function(selected) {
+                    return function() {
+                        checkAnswer(selected);
+                    };
+                })(choices[i]);
+                row.appendChild(btn);
+            }
+            optionsBox.appendChild(row);
+        }
+
+        function checkAnswer(selected) {
+            var feedbackScreen = document.getElementById("feedback-screen");
+            var feedbackMsg = document.getElementById("feedback-msg");
+            
+            if (selected === currentAnswer) {
+                score++;
+                document.getElementById("score-val").innerHTML = score;
+                feedbackMsg.innerHTML = "⚽ TOR!!";
+                feedbackScreen.style.backgroundColor = "rgba(11, 25, 44, 0.95)";
+                feedbackMsg.className = "feedback-text feedback-correct";
+            } else {
+                chapterErrors++;
+                // In den localStorage schreiben für das Meilenstein-Zeugnis
+                if(window.localStorage) {
+                    window.localStorage.setItem("lola_kap5_errors", chapterErrors);
+                }
+                feedbackMsg.innerHTML = "❌ Gehalten!";
+                feedbackScreen.style.backgroundColor = "rgba(44, 11, 11, 0.95)";
+                feedbackMsg.className = "feedback-text feedback-wrong";
+            }
+
+            feedbackScreen.style.display = "flex";
+
+            setTimeout(function() {
+                feedbackScreen.style.display = "none";
+                nextTask();
+            }, 1200);
+        }
+
+        function showEndScreen() {
+            var pitchEl = document.getElementById("pitch");
+            document.getElementById("game-instruction").innerHTML = "Training beendet!";
+            document.getElementById("game-word").innerHTML = "Ergebnis: " + score + " / 5 Tore";
+            
+            var optionsBox = document.getElementById("options-box");
+            optionsBox.innerHTML = "";
+            
+            var replayBtn = document.createElement("button");
+            replayBtn.className = "action-btn";
+            replayBtn.innerHTML = "🔄 Erneut spielen";
+            replayBtn.onclick = function() {
+                initGame();
+            };
+            
+            optionsBox.appendChild(replayBtn);
+        }
+
+        // Start beim Laden
+        window.onload = function() {
+            initGame();
+        };
+    </script>
+</body>
+</html>
