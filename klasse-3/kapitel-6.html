@@ -2,130 +2,537 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Station 6 - Vokalzwillinge</title>
-    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wortmeister - Kapitel 6</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Verdana', 'Arial', sans-serif; }
-        body { background-color: #0d1b2a; color: #ffffff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; font-size: 19px; line-height: 1.7; letter-spacing: 0.07em; }
-        header { text-align: center; margin-bottom: 15px; width: 100%; max-width: 500px; }
-        h1 { font-size: 22px; color: #00f5d4; margin: 5px 0; text-transform: uppercase; text-shadow: 0 0 10px rgba(0, 245, 212, 0.4); }
-        .timer-container { background-color: #1b263b; border: 2px solid #00f5d4; padding: 8px 15px; border-radius: 20px; display: inline-block; margin: 8px 0; font-size: 20px; font-weight: bold; color: #00f5d4; }
-        .progress-bar { width: 100%; background-color: #415a77; height: 15px; border-radius: 10px; overflow: hidden; margin-top: 10px; }
-        .progress { height: 100%; background-color: #00f5d4; width: 0%; transition: width 0.3s ease; }
-        .game-container { background: #1b263b; border-radius: 15px; padding: 20px; width: 100%; max-width: 500px; box-shadow: 0 0 15px rgba(0, 245, 212, 0.4); min-height: 460px; display: flex; flex-direction: column; justify-content: space-between; border: 2px solid #00f5d4; }
-        .screen { display: none; flex-direction: column; height: 100%; }
-        .screen.active { display: flex; }
-        .instruction { font-weight: bold; margin-bottom: 12px; color: #ffffff; font-size: 19px; }
-        button { background-color: #00f5d4; color: #0d1b2a; border: none; padding: 15px 20px; font-size: 19px; font-weight: bold; border-radius: 25px; cursor: pointer; margin-top: 15px; width: 100%; box-shadow: 0 4px 10px rgba(0, 245, 212, 0.2); }
-        .word-display { font-size: 32px; font-weight: bold; letter-spacing: 0.15em; text-align: center; margin: 15px 0; background: #0d1b2a; padding: 12px; border-radius: 8px; color: #00f5d4; border: 2px solid #00f5d4; }
-        .options-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .options-grid button { margin: 0; background-color: #415a77; color: #ffffff; font-size: 26px; border: 1px solid rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; text-align: center; }
-        .options-grid button:active, .options-grid button.selected { background-color: #00f5d4; color: #0d1b2a; }
-        .feedback { text-align: center; font-weight: bold; font-size: 18px; margin-top: 10px; min-height: 25px; }
-        .correct { color: #00f5d4; text-shadow: 0 0 8px #00f5d4; }
-        .wrong { color: #ff5400; }
+        * { box-sizing: border-box; }
+        html, body { min-height: 100%; }
+        body {
+            margin: 0;
+            background: #081827;
+            color: #ffffff;
+            font-family: Arial, Verdana, sans-serif;
+            letter-spacing: 0.06em;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .arena {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.15), rgba(8, 24, 39, 0) 34%),
+                linear-gradient(180deg, #102b45 0%, #081827 62%);
+        }
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            max-width: 520px;
+            width: 100%;
+            margin: 0 auto 10px auto;
+        }
+        .nav-back {
+            min-width: 76px;
+            min-height: 42px;
+            border: 1px solid #89b8d9;
+            background: rgba(8, 24, 39, 0.7);
+            color: #d8f6ff;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .title {
+            flex: 1;
+            min-width: 0;
+            text-align: center;
+            color: #00f2fe;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .score {
+            min-width: 76px;
+            text-align: right;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .progress-track {
+            max-width: 520px;
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            overflow: hidden;
+            margin: 0 auto 12px auto;
+            background: #34526d;
+            border: 1px solid rgba(255,255,255,0.16);
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00f2fe, #d7ff4f);
+        }
+        .card {
+            max-width: 520px;
+            width: 100%;
+            margin: 0 auto;
+            border: 2px solid #00f2fe;
+            background: rgba(13, 37, 59, 0.94);
+            border-radius: 8px;
+            padding: 14px;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.25);
+        }
+        .mode-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 8px;
+            padding: 10px;
+            background: #102f49;
+            border: 2px solid #d7ff4f;
+            min-height: 74px;
+        }
+        .mode-symbol {
+            width: 76px;
+            min-width: 76px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #d7ff4f;
+            color: #081827;
+            font-size: 25px;
+            font-weight: bold;
+            letter-spacing: 0;
+            text-align: center;
+        }
+        .mode {
+            min-width: 0;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 20px;
+            line-height: 1.15;
+            min-height: 0;
+            letter-spacing: 0.03em;
+        }
+        .instruction {
+            margin-top: 12px;
+            color: #ffffff;
+            font-size: 22px;
+            line-height: 1.25;
+            min-height: 58px;
+            font-weight: bold;
+        }
+        .word-box {
+            margin: 12px 0;
+            min-height: 102px;
+            border: 2px dashed #00f2fe;
+            border-radius: 8px;
+            background: #081827;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 14px;
+            font-size: 34px;
+            font-weight: bold;
+            line-height: 1.22;
+            overflow-wrap: anywhere;
+        }
+        .hint {
+            color: #d7ff4f;
+            min-height: 26px;
+            font-size: 16px;
+            line-height: 1.35;
+            font-weight: bold;
+            text-align: center;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .option-btn, .wide-btn {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            min-height: 62px;
+            border: 2px solid #00f2fe;
+            border-radius: 8px;
+            background: #1d4466;
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+            padding: 12px;
+            overflow-wrap: anywhere;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .option-btn:active, .wide-btn:active {
+            transform: scale(0.98);
+            background: #00f2fe;
+            color: #081827;
+        }
+        .feedback {
+            min-height: 58px;
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.35;
+            text-align: center;
+            font-weight: bold;
+            background: rgba(8, 24, 39, 0.7);
+        }
+        .good { color: #9cff7c; border: 1px solid rgba(156,255,124,0.5); }
+        .bad { color: #ffb1b1; border: 1px solid rgba(255,177,177,0.5); }
+        .hidden { display: none; }
+        .syllable { color: #00f2fe; }
+        .vowel-theme { border-color: #00f2fe; }
+        .vowel-theme .mode-symbol { background: #00f2fe; }
+        .rhyme-theme { border-color: #d7ff4f; }
+        .rhyme-theme .mode-symbol { background: #d7ff4f; }
+        .longi-theme { border-color: #ffcc66; }
+        .longi-theme .mode-symbol { background: #ffcc66; }
+        .syllable-theme { border-color: #b9a7ff; }
+        .syllable-theme .mode-symbol { background: #b9a7ff; }
+        .detective-theme { border-color: #ff8fb1; }
+        .detective-theme .mode-symbol { background: #ff8fb1; }
+        @media (max-width: 380px) {
+            .word-box { font-size: 29px; }
+            .option-btn, .wide-btn { font-size: 19px; min-height: 58px; }
+            .title { font-size: 16px; }
+            .mode { font-size: 18px; }
+            .instruction { font-size: 20px; }
+            .mode-symbol { width: 66px; min-width: 66px; font-size: 22px; }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>🏆 Wortmeister: Station 6 ⚽</h1>
-        <div id="station-title" style="font-weight: bold; color: #00f5d4;">Bereite Arena vor...</div>
-        <div class="timer-container">⏱️ Spielzeit: <span id="game-timer">00:00</span></div>
-        <div class="progress-bar"><div class="progress" id="app-progress"></div></div>
-    </header>
-
-    <div class="game-container">
-        <div id="spiel-screen" class="screen active">
-            <div class="instruction">Welcher Zwilling-Selbstlaut fehlt im Wort? ⚡</div>
-            <div class="word-display" id="s6-word">..</div>
-            <div class="options-grid">
-                <button onclick="selectOption('aa')">aa</button>
-                <button onclick="selectOption('ee')">ee</button>
-                <button onclick="selectOption('oo')">oo</button>
-            </div>
-            <div class="feedback" id="s6-feedback"></div>
-            <button style="display:none;" id="s6-next-btn" onclick="nextQuestion()">Nächster Ball ⚽</button>
+    <div class="arena">
+        <div class="topbar">
+            <button class="nav-back" id="back-btn" type="button">Men&uuml;</button>
+            <div class="title">Kapitel 6: Vokal-Zwillinge</div>
+            <div class="score"><span id="score-val">0</span> / <span id="rounds-val">8</span></div>
         </div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
 
-        <div id="finish-screen" class="screen">
-            <div class="instruction" style="text-align: center; font-size: 24px; color: #00f5d4;">🎉 KAPITEL 6 GEWONNEN! 🎉</div>
-            <div class="word-display" style="font-size: 18px; line-height: 1.6; text-align: left; letter-spacing: normal;">
-                ⏱️ Spielzeit: <span id="rep-time" style="color:#00f5d4; font-weight:bold;">00:00</span><br>
-                🎯 Trefferquote: <span id="rep-quota" style="color:#00f5d4; font-weight:bold;">100%</span><br><br>
-                <b>📋 Trainer-Wissen:</b><br>
-                • Zwillinge klingen besonders lang (Meer, Boot, Paar).
+        <div class="card">
+            <div>
+                <div class="mode-card" id="mode-card">
+                    <div class="mode-symbol" id="mode-symbol">?</div>
+                    <div class="mode" id="mode-label">Training wird geladen</div>
+                </div>
+                <div class="instruction" id="instruction-text">Gleich geht es los.</div>
+                <div class="word-box" id="word-box">...</div>
+                <div class="hint" id="hint-box"></div>
             </div>
-            <button onclick="window.location.href='index.html'">Zurück zum Hauptmenü 🏠</button>
+            <div>
+                <div class="options" id="options-box"></div>
+                <div class="feedback" id="feedback-box"></div>
+                <button class="wide-btn hidden" id="next-btn" type="button">Weiter</button>
+            </div>
         </div>
     </div>
 
     <script>
-        var totalSeconds = 0; var timerInterval = null;
-        var totalGoalsToMake = 4; var totalAttemptsMade = 0;
-        var pool = [
-            { d: "das M..r", c: "ee", f: "das Meer" }, { d: "das B..t", c: "oo", f: "das Boot" },
-            { d: "die H..re", c: "aa", f: "die Haare" }, { d: "der ..l", c: "aa", f: "der Aal" }
+        var maxRounds = 10;
+        var score = 0;
+        var roundIndex = 0;
+        var activeTasks = [];
+        var currentTask = null;
+        var locked = false;
+        var chapterErrors = 0;
+
+        var tasks = [
+            {
+                cue: "aa",
+                theme: "vowel-theme",
+                mode: "Doppelvokal-Torwand",
+                instruction: "Welcher Vokal passt?",
+                word: "das M<span class='syllable'>..</span>r",
+                options: ["aa", "ee", "oo"],
+                answer: "ee",
+                reveal: "das Meer",
+                hint: "Meer steht im Kapitel bei den W&ouml;rtern mit doppelten Selbstlauten."
+            },
+            {
+                cue: "oo",
+                theme: "vowel-theme",
+                mode: "Doppelvokal-Torwand",
+                instruction: "Welcher Vokal passt?",
+                word: "das B<span class='syllable'>..</span>t",
+                options: ["aa", "ee", "oo"],
+                answer: "oo",
+                reveal: "das Boot",
+                hint: "Bei Boot h&ouml;rst du einen langen Vokal."
+            },
+            {
+                cue: "aa",
+                theme: "vowel-theme",
+                mode: "Doppelvokal-Torwand",
+                instruction: "Welcher Vokal passt?",
+                word: "der <span class='syllable'>..</span>l",
+                options: ["aa", "ee", "oo"],
+                answer: "aa",
+                reveal: "der Aal",
+                hint: "Am Wortanfang wird gro&szlig;geschrieben."
+            },
+            {
+                cue: "=",
+                theme: "rhyme-theme",
+                mode: "Reim-Elfmeter",
+                instruction: "Welches Wort reimt sich?",
+                word: "See",
+                options: ["Klee", "Paar", "Boot"],
+                answer: "Klee",
+                reveal: "See - Klee",
+                hint: "Reime helfen beim H&ouml;ren und Merken."
+            },
+            {
+                cue: "=",
+                theme: "rhyme-theme",
+                mode: "Reim-Elfmeter",
+                instruction: "Welches Wort reimt sich?",
+                word: "Haar",
+                options: ["Paar", "Meer", "Zoo"],
+                answer: "Paar",
+                reveal: "Haar - Paar",
+                hint: "Achte auf den Klang am Wortende."
+            },
+            {
+                cue: "i",
+                theme: "longi-theme",
+                mode: "Lang-i-Lupe",
+                instruction: "Wo klingt das i lang?",
+                word: "Finde das lange i",
+                options: ["Kino", "Kind", "bitte"],
+                answer: "Kino",
+                reveal: "Ki<span class='syllable'>..</span>no",
+                hint: "Im Kapitel stehen W&ouml;rter wie Kino, prima, Medizin und Maschine."
+            },
+            {
+                cue: "i",
+                theme: "longi-theme",
+                mode: "Lang-i-Lupe",
+                instruction: "Was passt zur i-Gruppe?",
+                word: "prima - Medizin - ?",
+                options: ["Maschine", "Mitte", "still"],
+                answer: "Maschine",
+                reveal: "Ma<span class='syllable'>..</span>schi<span class='syllable'>..</span>ne",
+                hint: "Nicht jedes lange i wird mit ie geschrieben."
+            },
+            {
+                cue: "..",
+                theme: "syllable-theme",
+                mode: "Silben-Trib&uuml;ne",
+                instruction: "Setze die Silbenpunkte.",
+                word: "Medizin",
+                options: ["Me..di..zin", "Med..i..zin", "Me..diz..in"],
+                answer: "Me..di..zin",
+                reveal: "Me<span class='syllable'>..</span>di<span class='syllable'>..</span>zin",
+                hint: "Die Punkte zeigen kleine Leseschritte."
+            },
+            {
+                cue: "..",
+                theme: "syllable-theme",
+                mode: "Silben-Trib&uuml;ne",
+                instruction: "Setze die Silbenpunkte.",
+                word: "Kabine",
+                options: ["Ka..bi..ne", "Kab..i..ne", "Ka..bin..e"],
+                answer: "Ka..bi..ne",
+                reveal: "Ka<span class='syllable'>..</span>bi<span class='syllable'>..</span>ne",
+                hint: "Silben machen lange W&ouml;rter leichter."
+            },
+            {
+                cue: "aa",
+                theme: "vowel-theme",
+                mode: "Wortfamilien-Blick",
+                instruction: "Was geh&ouml;rt zu aa?",
+                word: "aa",
+                options: ["Waage", "Wiese", "Wolke"],
+                answer: "Waage",
+                reveal: "Waa<span class='syllable'>..</span>ge",
+                hint: "Waage steht im Kapitel bei den Merkw&ouml;rtern."
+            },
+            {
+                cue: "oo",
+                theme: "vowel-theme",
+                mode: "Wortfamilien-Blick",
+                instruction: "Was geh&ouml;rt zu oo?",
+                word: "oo",
+                options: ["Moor", "Meer", "minus"],
+                answer: "Moor",
+                reveal: "Moor",
+                hint: "Boot, Zoo und Moor passen zusammen."
+            },
+            {
+                cue: "!!",
+                theme: "detective-theme",
+                mode: "Detektiv-Vergleich",
+                instruction: "Finde das richtige Wort.",
+                word: "Kaffe oder Kaffee?",
+                options: ["Kaffee", "Kaffe", "Kafe"],
+                answer: "Kaffee",
+                reveal: "der Kaffee",
+                hint: "Das Wort reimt sich im Kapitel mit See, Fee und Klee."
+            }
         ];
-        var questions = []; var currentIndex = 0;
 
-        function startTimer() {
-            if(timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(function() {
-                totalSeconds++;
-                var mins = Math.floor(totalSeconds / 60); var secs = totalSeconds % 60;
-                document.getElementById("game-timer").innerText = (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
-            }, 1000);
+        function getEl(id) {
+            return document.getElementById(id);
         }
 
-        function shuffleArray(arr) {
-            var temp = arr.slice();
-            for (var i = temp.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var b = temp[i]; temp[i] = temp[j]; temp[j] = b;
+        function shuffleArray(source) {
+            var arr = source.slice(0);
+            var i;
+            var j;
+            var temp;
+            for (i = arr.length - 1; i > 0; i--) {
+                j = Math.floor(Math.random() * (i + 1));
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
             }
-            return temp;
+            return arr;
         }
 
-        // ES5 compliant logic initialization
-        function initGame() {
-            questions = shuffleArray(pool).slice(0, totalGoalsToMake);
-            startTimer(); showQuestion();
+        function setText(id, text) {
+            getEl(id).innerHTML = text;
         }
 
-        function showQuestion() {
-            document.getElementById("station-title").innerText = "Kapitel 6 - Runde " + (currentIndex + 1) + "/" + totalGoalsToMake;
-            document.getElementById("app-progress").style.width = ((currentIndex / totalGoalsToMake) * 100) + "%";
-            document.getElementById("s6-feedback").innerText = "";
-            document.getElementById("s6-next-btn").style.display = "none";
-            document.getElementById("s6-word").innerText = questions[currentIndex].d;
+        function startGame() {
+            score = 0;
+            roundIndex = 0;
+            chapterErrors = 0;
+            activeTasks = shuffleArray(tasks).slice(0, maxRounds);
+            setText("score-val", score);
+            setText("rounds-val", maxRounds);
+            getEl("next-btn").className = "wide-btn hidden";
+            showTask();
         }
 
-        function selectOption(opt) {
-            totalAttemptsMade++;
-            var fb = document.getElementById("s6-feedback");
-            var cur = questions[currentIndex];
-            if(opt === cur.c) {
-                fb.className = "feedback correct"; fb.innerText = "🎯 Treffer!";
-                document.getElementById("s6-word").innerText = cur.f;
-                document.getElementById("s6-next-btn").style.display = "block";
+        function showTask() {
+            var progress;
+            var optionsBox;
+            var choices;
+            var i;
+            var btn;
+            if (roundIndex >= activeTasks.length) {
+                showFinish();
+                return;
+            }
+            locked = false;
+            currentTask = activeTasks[roundIndex];
+            progress = Math.round((roundIndex / maxRounds) * 100);
+            getEl("progress-fill").style.width = progress + "%";
+            getEl("mode-card").className = "mode-card " + currentTask.theme;
+            setText("mode-symbol", currentTask.cue);
+            setText("mode-label", currentTask.mode);
+            setText("instruction-text", currentTask.instruction);
+            setText("word-box", currentTask.word);
+            setText("hint-box", "Runde " + (roundIndex + 1) + " von " + maxRounds);
+            setText("feedback-box", "");
+            getEl("feedback-box").className = "feedback";
+            getEl("next-btn").className = "wide-btn hidden";
+            optionsBox = getEl("options-box");
+            optionsBox.innerHTML = "";
+            choices = shuffleArray(currentTask.options);
+            for (i = 0; i < choices.length; i++) {
+                btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "option-btn";
+                btn.innerHTML = choices[i];
+                btn.onclick = makeAnswerHandler(choices[i]);
+                optionsBox.appendChild(btn);
+            }
+        }
+
+        function makeAnswerHandler(choice) {
+            return function() {
+                checkAnswer(choice);
+            };
+        }
+
+        function checkAnswer(choice) {
+            var feedbackBox;
+            if (locked) {
+                return;
+            }
+            locked = true;
+            feedbackBox = getEl("feedback-box");
+            if (choice === currentTask.answer) {
+                score++;
+                setText("score-val", score);
+                setText("word-box", currentTask.reveal);
+                feedbackBox.className = "feedback good";
+                feedbackBox.innerHTML = "Treffer. " + currentTask.hint;
             } else {
-                fb.className = "feedback wrong"; fb.innerText = "Daneben!";
+                chapterErrors++;
+                saveError();
+                setText("word-box", currentTask.reveal);
+                feedbackBox.className = "feedback bad";
+                feedbackBox.innerHTML = "Richtig ist: <strong>" + currentTask.answer + "</strong><br>" + currentTask.hint;
+            }
+            getEl("next-btn").className = "wide-btn";
+        }
+
+        function saveError() {
+            if (window.localStorage) {
+                window.localStorage.setItem("lola_kap6_errors", String(chapterErrors));
             }
         }
 
-        function nextQuestion() {
-            currentIndex++;
-            if(currentIndex >= totalGoalsToMake) {
-                clearInterval(timerInterval);
-                document.getElementById("spiel-screen").style.display = "none";
-                document.getElementById("finish-screen").style.display = "flex";
-                document.getElementById("rep-time").innerText = document.getElementById("game-timer").innerText;
-                var quota = Math.round((totalGoalsToMake / totalAttemptsMade) * 100);
-                document.getElementById("rep-quota").innerText = quota + "%";
-            } else { showQuestion(); }
+        function nextRound() {
+            roundIndex++;
+            showTask();
         }
-        window.onload = initGame;
+
+        function showFinish() {
+            var message;
+            getEl("progress-fill").style.width = "100%";
+            setText("mode-label", "Training geschafft");
+            setText("instruction-text", "Kapitel 6 ist bereit f&uuml;r die n&auml;chste Wiederholung.");
+            setText("word-box", score + " von " + maxRounds + " Treffern");
+            if (score >= 7) {
+                message = "Starkes Spiel. Doppelvokale und lange-i-W&ouml;rter sitzen schon gut.";
+            } else if (score >= 5) {
+                message = "Gutes Training. Eine zweite Runde macht die Wortbilder sicherer.";
+            } else {
+                message = "Das war eine Trainingsrunde. Beim n&auml;chsten Durchlauf erkennst du mehr wieder.";
+            }
+            setText("hint-box", message);
+            getEl("options-box").innerHTML = "";
+            getEl("feedback-box").className = "feedback";
+            setText("feedback-box", "Fehler werden f&uuml;r den Meilenstein kapitelweise gemerkt.");
+            getEl("next-btn").className = "wide-btn";
+            getEl("next-btn").innerHTML = "Noch einmal spielen";
+            getEl("next-btn").onclick = function() {
+                getEl("next-btn").innerHTML = "Weiter";
+                getEl("next-btn").onclick = nextRound;
+                startGame();
+            };
+        }
+
+        function goBack() {
+            window.location.href = "index.html";
+        }
+
+        window.onload = function() {
+            getEl("back-btn").onclick = goBack;
+            getEl("next-btn").onclick = nextRound;
+            startGame();
+        };
     </script>
 </body>
 </html>
