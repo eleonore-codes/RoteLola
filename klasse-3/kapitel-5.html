@@ -3,380 +3,520 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DFB-Wortmeister 2026 - Kapitel 5</title>
+    <title>Wortmeister - Kapitel 5</title>
     <style>
-        /* DFB Arena & Dyslexie-optimiertes Design */
+        * { box-sizing: border-box; }
+        html, body { min-height: 100%; }
         body {
             margin: 0;
-            padding: 0;
-            background-color: #0B192C; /* Dunkelblauer Arena-Hintergrund */
-            font-family: 'Arial', sans-serif;
-            letter-spacing: 0.07em; /* Dyslexie-Support: Mehr Zeichenabstand */
-            color: #FFFFFF;
-            overflow: hidden;
+            background: #081827;
+            color: #ffffff;
+            font-family: Arial, Verdana, sans-serif;
+            letter-spacing: 0.06em;
             user-select: none;
             -webkit-user-select: none;
         }
-
-        /* Stadion-Anzeigetafel */
-        .scoreboard {
-            background-color: #1E3E62;
-            border-bottom: 4px solid #00F2FE; /* Metallic-Türkis Accent */
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .score-display {
-            color: #00F2FE;
-            font-size: 1.5rem;
-        }
-
-        /* Spielfeld / Haupt-Anzeige */
-        .pitch {
-            height: 40vh;
+        .arena {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
+            padding: 12px;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.16), rgba(8, 24, 39, 0) 34%),
+                linear-gradient(180deg, #102b45 0%, #081827 62%);
         }
-
-        .instruction {
-            font-size: 1.1rem;
-            color: #A0BFE0;
-            margin-bottom: 15px;
-            min-height: 2.5rem;
-        }
-
-        .word-display {
-            font-size: 2.5rem;
-            font-weight: bold;
-            background: rgba(30, 62, 98, 0.6);
-            padding: 15px 30px;
-            border-radius: 12px;
-            border: 2px dashed #00F2FE;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        /* Visuelle Trennungshilfe für Silbenkerne */
-        .syllable-dot {
-            color: #00F2FE;
-            padding: 0 2px;
-        }
-
-        /* Interaktions-Zone (Optimiert für Daumen-Radius iPhone XR) */
-        .controls-zone {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 45vh;
-            background: linear-gradient(to top, #0B192C 85%, transparent);
-            padding: 20px;
+        .topbar {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            gap: 15px;
-        }
-
-        .btn-container {
+            justify-content: space-between;
+            gap: 10px;
+            max-width: 520px;
             width: 100%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            margin: 0 auto 10px auto;
         }
-
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            width: 100%;
-        }
-
-        /* Trikot- und Arena-Buttons */
-        .action-btn {
-            background: #1E3E62;
-            border: 2px solid #00F2FE;
-            color: #FFFFFF;
-            border-radius: 12px;
-            padding: 18px 10px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            cursor: pointer;
-            flex: 1;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            -webkit-tap-highlight-color: transparent;
-            transition: transform 0.1s ease;
-        }
-
-        .action-btn:active {
-            transform: scale(0.95);
-            background: #00F2FE;
-            color: #0B192C;
-        }
-
-        /* Feedback-Overlay */
-        .feedback-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(11, 25, 44, 0.9);
-            z-index: 10;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .feedback-text {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .feedback-correct { color: #00FF66; }
-        .feedback-wrong { color: #FF3366; }
-
-        /* Zurück zum Turnierbaum */
         .nav-back {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: none;
-            border: 1px solid #A0BFE0;
-            color: #A0BFE0;
-            border-radius: 6px;
-            padding: 5px 10px;
-            font-size: 0.9rem;
-            cursor: pointer;
+            min-width: 76px;
+            min-height: 42px;
+            border: 1px solid #89b8d9;
+            background: rgba(8, 24, 39, 0.7);
+            color: #d8f6ff;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .title {
+            flex: 1;
+            min-width: 0;
+            text-align: center;
+            color: #00f2fe;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .score {
+            min-width: 76px;
+            text-align: right;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .progress-track {
+            max-width: 520px;
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            overflow: hidden;
+            margin: 0 auto 12px auto;
+            background: #34526d;
+            border: 1px solid rgba(255,255,255,0.16);
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00f2fe, #d7ff4f);
+        }
+        .card {
+            max-width: 520px;
+            width: 100%;
+            margin: 0 auto;
+            border: 2px solid #00f2fe;
+            background: rgba(13, 37, 59, 0.94);
+            border-radius: 8px;
+            padding: 14px;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.25);
+        }
+        .mode-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 8px;
+            padding: 10px;
+            background: #102f49;
+            border: 2px solid #d7ff4f;
+            min-height: 74px;
+        }
+        .mode-symbol {
+            width: 76px;
+            min-width: 76px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #d7ff4f;
+            color: #081827;
+            font-size: 25px;
+            font-weight: bold;
+            letter-spacing: 0;
+            text-align: center;
+        }
+        .mode {
+            min-width: 0;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 20px;
+            line-height: 1.15;
+            min-height: 0;
+            letter-spacing: 0.03em;
+        }
+        .instruction {
+            margin-top: 12px;
+            color: #ffffff;
+            font-size: 22px;
+            line-height: 1.25;
+            min-height: 58px;
+            font-weight: bold;
+        }
+        .word-box {
+            margin: 12px 0;
+            min-height: 102px;
+            border: 2px dashed #00f2fe;
+            border-radius: 8px;
+            background: #081827;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 14px;
+            font-size: 34px;
+            font-weight: bold;
+            line-height: 1.22;
+            overflow-wrap: anywhere;
+        }
+        .hint {
+            color: #d7ff4f;
+            min-height: 26px;
+            font-size: 16px;
+            line-height: 1.35;
+            font-weight: bold;
+            text-align: center;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .option-btn, .wide-btn {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            min-height: 62px;
+            border: 2px solid #00f2fe;
+            border-radius: 8px;
+            background: #1d4466;
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 0.04em;
+            padding: 12px;
+            overflow-wrap: anywhere;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .option-btn:active, .wide-btn:active {
+            transform: scale(0.98);
+            background: #00f2fe;
+            color: #081827;
+        }
+        .feedback {
+            min-height: 58px;
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.35;
+            text-align: center;
+            font-weight: bold;
+            background: rgba(8, 24, 39, 0.7);
+        }
+        .good { color: #9cff7c; border: 1px solid rgba(156,255,124,0.5); }
+        .bad { color: #ffb1b1; border: 1px solid rgba(255,177,177,0.5); }
+        .abc-theme { border-color: #d7ff4f; }
+        .abc-theme .mode-symbol { background: #d7ff4f; }
+        .book-theme { border-color: #00f2fe; }
+        .book-theme .mode-symbol { background: #00f2fe; }
+        .foreign-theme { border-color: #ffcc66; }
+        .foreign-theme .mode-symbol { background: #ffcc66; }
+        .detective-theme { border-color: #ff8fb1; }
+        .detective-theme .mode-symbol { background: #ff8fb1; }
+        .parts-theme { border-color: #b9a7ff; }
+        .parts-theme .mode-symbol { background: #b9a7ff; }
+        .hidden { display: none; }
+        @media (max-width: 380px) {
+            .word-box { font-size: 29px; }
+            .option-btn, .wide-btn { font-size: 19px; min-height: 58px; }
+            .title { font-size: 16px; }
+            .mode { font-size: 18px; }
+            .instruction { font-size: 20px; }
+            .mode-symbol { width: 66px; min-width: 66px; font-size: 22px; }
         }
     </style>
 </head>
 <body>
+    <div class="arena">
+        <div class="topbar">
+            <button class="nav-back" id="back-btn" type="button">Men&uuml;</button>
+            <div class="title">Kapitel 5: W&ouml;rterbuch</div>
+            <div class="score"><span id="score-val">0</span> / <span id="rounds-val">8</span></div>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
 
-    <button class="nav-back" onclick="window.location.href='index.html'">🏆 Menü</button>
-
-    <div class="scoreboard">
-        Kapitel 5: Der Wörterbuch-Trainer | <span class="score-display">⚽ Tor: <span id="score-val">0</span> / 5</span>
-    </div>
-
-    <div class="pitch">
-        <div class="instruction" id="game-instruction">Lade Trainingsspiel...</div>
-        <div class="word-display" id="game-word">- - -</div>
-    </div>
-
-    <div class="controls-zone">
-        <div class="btn-container" id="options-box">
+        <div class="card">
+            <div>
+                <div class="mode-card" id="mode-card">
+                    <div class="mode-symbol" id="mode-symbol">?</div>
+                    <div class="mode" id="mode-label">Training wird geladen</div>
+                </div>
+                <div class="instruction" id="instruction-text">Gleich geht es los.</div>
+                <div class="word-box" id="word-box">...</div>
+                <div class="hint" id="hint-box"></div>
             </div>
-    </div>
-
-    <div class="feedback-overlay" id="feedback-screen">
-        <div class="feedback-text" id="feedback-msg">TOR!</div>
+            <div>
+                <div class="options" id="options-box"></div>
+                <div class="feedback" id="feedback-box"></div>
+                <button class="wide-btn hidden" id="next-btn" type="button">Weiter</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // --- REINER ES5 STANDARD ---
-        // Wortschatz-Datenbank für Kapitel 5 aus den Original-Lola-Vorlagen
-        var dataset = {
-            // Spieltyp 1: Mehrzahl -> Einzahl (Wörterbuch-Suche)
-            singularPlural: [
-                { display: "Fahrräder", correct: "das Fahrrad", wrong: "die Fahrrads" },
-                { display: "Kämme", correct: "der Kamm", wrong: "die Kämme" },
-                { display: "Gärten", correct: "der Garten", wrong: "das Garten" },
-                { display: "Tücher", correct: "das Tuch", wrong: "die Tücher" },
-                { display: "Tränen", correct: "die Träne", wrong: "der Tränen" }
-            ],
-            // Spieltyp 2: Verben -> Grundform finden
-            verbInfinitive: [
-                { display: "er fälschte", correct: "fälschen", wrong: "fälschen" }, // Falschschreibung wird im Typ abgefangen
-                { display: "sie fressen", correct: "fressen", wrong: "fresen" },
-                { display: "er aß", correct: "essen", wrong: "asen" },
-                { display: "sie fielen", correct: "fallen", wrong: "fieln" },
-                { display: "wir küssten", correct: "küssen", wrong: "küsten" }
-            ],
-            // Spieltyp 3: Alphabetischer Nachfolger
-            abcOrder: [
-                { display: "Berg", correct: "Dorf", wrong: "Anfang" }, // Was kommt danach?
-                { display: "Garten", correct: "Hase", wrong: "Feuer" },
-                { display: "Licht", correct: "Netz", wrong: "Keks" },
-                { display: "Ort", correct: "Punkt", wrong: "Dorf" }
-            ],
-            // Spieltyp 4: Schiri-Videobeweis (Falschschreibungen entlarven)
-            varCheck: [
-                { display: "Fäuer", correct: "Feuer", wrong: "Fäuer" },
-                { display: "Berk", correct: "Berg", wrong: "Berk" },
-                { display: "Schlus", correct: "Schluss", wrong: "Schlus" },
-                { display: "Zait", correct: "Zeit", wrong: "Zait" }
-            ]
-        };
-
-        var currentRound = 0;
-        var maxRounds = 5;
+        var maxRounds = 10;
         var score = 0;
-        var currentAnswer = "";
-        
-        // Tracking-Variablen für das globale Meilenstein-Zeugnis
+        var roundIndex = 0;
+        var activeTasks = [];
+        var currentTask = null;
+        var locked = false;
         var chapterErrors = 0;
 
-        function shuffleArray(array) {
-            for (var i = array.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
+        var tasks = [
+            {
+                cue: "ABC",
+                theme: "abc-theme",
+                mode: "ABC-Stadion",
+                instruction: "Was kommt danach?",
+                word: "Berg",
+                options: ["Dorf", "Hase", "Ort"],
+                answer: "Dorf",
+                hint: "Im Lehrbuch werden Namen und Nomen nach dem Alphabet geordnet."
+            },
+            {
+                cue: "ABC",
+                theme: "abc-theme",
+                mode: "ABC-Stadion",
+                instruction: "Was steht dazwischen?",
+                word: "Feuer  ...  Hase",
+                options: ["Garten", "Punkt", "Zeit"],
+                answer: "Garten",
+                hint: "Schau zuerst auf den Anfangsbuchstaben."
+            },
+            {
+                cue: "1",
+                theme: "book-theme",
+                mode: "W&ouml;rterbuch-Scout",
+                instruction: "Suche die Einzahl.",
+                word: "die G&auml;rten",
+                options: ["der Garten", "die G&auml;rten", "das G&auml;rten"],
+                answer: "der Garten",
+                hint: "Mehrzahl wird als Einzahl gesucht."
+            },
+            {
+                cue: "GO",
+                theme: "book-theme",
+                mode: "W&ouml;rterbuch-Scout",
+                instruction: "Suche die Grundform.",
+                word: "er a&szlig;",
+                options: ["essen", "a&szlig;en", "asen"],
+                answer: "essen",
+                hint: "Bei Verben suchst du die Grundform."
+            },
+            {
+                cue: "GO",
+                theme: "book-theme",
+                mode: "W&ouml;rterbuch-Scout",
+                instruction: "Suche die Grundform.",
+                word: "sie fielen",
+                options: ["fallen", "fielen", "fiehlen"],
+                answer: "fallen",
+                hint: "Irregul&auml;re Vergangenheit braucht einen R&uuml;ckpass zur Grundform."
+            },
+            {
+                cue: "?",
+                theme: "foreign-theme",
+                mode: "Fremdwort-Liga",
+                instruction: "Was bedeutet das?",
+                word: "Thermometer",
+                options: ["misst W&auml;rme", "ein Sieger", "ein Brot"],
+                answer: "misst W&auml;rme",
+                hint: "Dieses Wort steht auf Seite 45."
+            },
+            {
+                cue: "?",
+                theme: "foreign-theme",
+                mode: "Fremdwort-Liga",
+                instruction: "Welche Bedeutung passt?",
+                word: "Champion",
+                options: ["Sieger", "Zeichen", "Jahreszeit"],
+                answer: "Sieger",
+                hint: "Fremdw&ouml;rter haben oft eine kurze Erkl&auml;rung."
+            },
+            {
+                cue: "?",
+                theme: "foreign-theme",
+                mode: "Fremdwort-Liga",
+                instruction: "Welche Bedeutung passt?",
+                word: "Explosion",
+                options: ["starker Knall", "kaltes Getr&auml;nk", "Sportplatz"],
+                answer: "starker Knall",
+                hint: "Das Wort ist im Kapitel als Fremdwort markiert."
+            },
+            {
+                cue: "!!",
+                theme: "detective-theme",
+                mode: "Fehler-Detektiv",
+                instruction: "Finde das richtige Wort.",
+                word: "Schiri-Videobeweis",
+                options: ["Spezialit&auml;ten", "Spezielliteten", "Schpezialit&auml;ten"],
+                answer: "Spezialit&auml;ten",
+                hint: "Vergleiche ruhig langsam Buchstabe f&uuml;r Buchstabe."
+            },
+            {
+                cue: "!!",
+                theme: "detective-theme",
+                mode: "Fehler-Detektiv",
+                instruction: "Finde das richtige Wort.",
+                word: "W&ouml;rterbuch-Check",
+                options: ["Konkurrenz", "Koncurenz", "Konkurenz"],
+                answer: "Konkurrenz",
+                hint: "Auf Seite 46 werden Fehlerw&ouml;rter markiert."
+            },
+            {
+                cue: "+",
+                theme: "parts-theme",
+                mode: "Wortbaustein-Pr&uuml;fer",
+                instruction: "Baue das Wort richtig.",
+                word: "Klassen + Olympiade",
+                options: ["Klassenolympiade", "Klasseolympiade", "Klasenolympiade"],
+                answer: "Klassenolympiade",
+                hint: "Pr&uuml;fe beide Wortbausteine."
+            },
+            {
+                cue: "+",
+                theme: "parts-theme",
+                mode: "Wortbaustein-Pr&uuml;fer",
+                instruction: "Baue das Wort richtig.",
+                word: "T-Shirt + Wettbewerb",
+                options: ["T-Shirt-Wettbewerb", "T-Shirt Wettbewerb", "Tshirtwettbewerb"],
+                answer: "T-Shirt-Wettbewerb",
+                hint: "Bei manchen Zusammensetzungen hilft der Bindestrich."
             }
-            return array;
+        ];
+
+        function getEl(id) {
+            return document.getElementById(id);
         }
 
-        function initGame() {
-            currentRound = 0;
+        function shuffleArray(source) {
+            var arr = source.slice(0);
+            var i;
+            var j;
+            var temp;
+            for (i = arr.length - 1; i > 0; i--) {
+                j = Math.floor(Math.random() * (i + 1));
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            return arr;
+        }
+
+        function setText(id, text) {
+            getEl(id).innerHTML = text;
+        }
+
+        function startGame() {
             score = 0;
-            document.getElementById("score-val").innerHTML = score;
-            nextTask();
+            roundIndex = 0;
+            chapterErrors = 0;
+            activeTasks = shuffleArray(tasks).slice(0, maxRounds);
+            setText("score-val", score);
+            setText("rounds-val", maxRounds);
+            getEl("next-btn").className = "wide-btn hidden";
+            showTask();
         }
 
-        function nextTask() {
-            if (currentRound >= maxRounds) {
-                showEndScreen();
+        function showTask() {
+            var progress;
+            var optionsBox;
+            var choices;
+            var i;
+            var btn;
+            if (roundIndex >= activeTasks.length) {
+                showFinish();
                 return;
             }
-
-            currentRound++;
-            
-            // Zufälligen Spieltyp wählen (1 bis 4) für maximale didaktische Variation
-            var typeSelector = Math.floor(Math.random() * 4) + 1;
-            
-            var instructionEl = document.getElementById("game-instruction");
-            var wordEl = document.getElementById("game-word");
-            var optionsBox = document.getElementById("options-box");
-            
-            optionsBox.innerHTML = ""; // Box leeren
-
-            var item;
-            if (typeSelector === 1) {
-                // Typ 1: Mehrzahl-Tackling
-                var list1 = dataset.singularPlural;
-                item = list1[Math.floor(Math.random() * list1.length)];
-                
-                instructionEl.innerHTML = "Wie suchst du die Mehrzahl im Wörterbuch?";
-                wordEl.innerHTML = item.display;
-                currentAnswer = item.correct;
-                
-                createButtons(item.correct, item.wrong);
-
-            } else if (typeSelector === 2) {
-                // Typ 2: Verb-Abseitsfalle (Grundform)
-                var list2 = dataset.verbInfinitive;
-                item = list2[Math.floor(Math.random() * list2.length)];
-                
-                instructionEl.innerHTML = "Finde die Grundform (Infinitiv) des Verbs:";
-                wordEl.innerHTML = item.display;
-                currentAnswer = item.correct;
-                
-                createButtons(item.correct, item.wrong);
-
-            } else if (typeSelector === 3) {
-                // Typ 3: ABC-Reihenfolge (Welches Wort folgt im Wörterbuch danach?)
-                var list3 = dataset.abcOrder;
-                item = list3[Math.floor(Math.random() * list3.length)];
-                
-                instructionEl.innerHTML = "Welches Wort kommt im Alphabet <span style='color:#00F2FE;'>NACH</span> diesem?";
-                wordEl.innerHTML = item.display;
-                currentAnswer = item.correct;
-                
-                createButtons(item.correct, item.wrong);
-
-            } else {
-                // Typ 4: Schiri-Videobeweis (Fehler korrigieren)
-                var list4 = dataset.varCheck;
-                item = list4[Math.floor(Math.random() * list4.length)];
-                
-                instructionEl.innerHTML = "⚠️ Schiri-Videobeweis! Klicke die richtige Schreibweise:";
-                wordEl.innerHTML = item.display;
-                currentAnswer = item.correct;
-                
-                createButtons(item.correct, item.wrong);
-            }
-        }
-
-        function createButtons(correctText, wrongText) {
-            var optionsBox = document.getElementById("options-box");
-            var choices = [correctText, wrongText];
-            choices = shuffleArray(choices);
-
-            // ES5-konformer Aufbau der Buttons im Daumensektor
-            var row = document.createElement("div");
-            row.className = "btn-row";
-
-            for (var i = 0; i < choices.length; i++) {
-                var btn = document.createElement("button");
-                btn.className = "action-btn";
+            locked = false;
+            currentTask = activeTasks[roundIndex];
+            progress = Math.round((roundIndex / maxRounds) * 100);
+            getEl("progress-fill").style.width = progress + "%";
+            getEl("mode-card").className = "mode-card " + currentTask.theme;
+            setText("mode-symbol", currentTask.cue);
+            setText("mode-label", currentTask.mode);
+            setText("instruction-text", currentTask.instruction);
+            setText("word-box", currentTask.word);
+            setText("hint-box", "Runde " + (roundIndex + 1) + " von " + maxRounds);
+            setText("feedback-box", "");
+            getEl("feedback-box").className = "feedback";
+            getEl("next-btn").className = "wide-btn hidden";
+            optionsBox = getEl("options-box");
+            optionsBox.innerHTML = "";
+            choices = shuffleArray(currentTask.options);
+            for (i = 0; i < choices.length; i++) {
+                btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "option-btn";
                 btn.innerHTML = choices[i];
-                // Wichtig: kein let/const, Übergabe des Wertes via Funktions-Scope
-                btn.onclick = (function(selected) {
-                    return function() {
-                        checkAnswer(selected);
-                    };
-                })(choices[i]);
-                row.appendChild(btn);
+                btn.onclick = makeAnswerHandler(choices[i]);
+                optionsBox.appendChild(btn);
             }
-            optionsBox.appendChild(row);
         }
 
-        function checkAnswer(selected) {
-            var feedbackScreen = document.getElementById("feedback-screen");
-            var feedbackMsg = document.getElementById("feedback-msg");
-            
-            if (selected === currentAnswer) {
+        function makeAnswerHandler(choice) {
+            return function() {
+                checkAnswer(choice);
+            };
+        }
+
+        function checkAnswer(choice) {
+            var feedbackBox;
+            if (locked) {
+                return;
+            }
+            locked = true;
+            feedbackBox = getEl("feedback-box");
+            if (choice === currentTask.answer) {
                 score++;
-                document.getElementById("score-val").innerHTML = score;
-                feedbackMsg.innerHTML = "⚽ TOR!!";
-                feedbackScreen.style.backgroundColor = "rgba(11, 25, 44, 0.95)";
-                feedbackMsg.className = "feedback-text feedback-correct";
+                setText("score-val", score);
+                feedbackBox.className = "feedback good";
+                feedbackBox.innerHTML = "Treffer. " + currentTask.hint;
             } else {
                 chapterErrors++;
-                // In den localStorage schreiben für das Meilenstein-Zeugnis
-                if(window.localStorage) {
-                    window.localStorage.setItem("lola_kap5_errors", chapterErrors);
-                }
-                feedbackMsg.innerHTML = "❌ Gehalten!";
-                feedbackScreen.style.backgroundColor = "rgba(44, 11, 11, 0.95)";
-                feedbackMsg.className = "feedback-text feedback-wrong";
+                saveError();
+                feedbackBox.className = "feedback bad";
+                feedbackBox.innerHTML = "Richtig ist: <strong>" + currentTask.answer + "</strong><br>" + currentTask.hint;
             }
-
-            feedbackScreen.style.display = "flex";
-
-            setTimeout(function() {
-                feedbackScreen.style.display = "none";
-                nextTask();
-            }, 1200);
+            getEl("next-btn").className = "wide-btn";
         }
 
-        function showEndScreen() {
-            var pitchEl = document.getElementById("pitch");
-            document.getElementById("game-instruction").innerHTML = "Training beendet!";
-            document.getElementById("game-word").innerHTML = "Ergebnis: " + score + " / 5 Tore";
-            
-            var optionsBox = document.getElementById("options-box");
-            optionsBox.innerHTML = "";
-            
-            var replayBtn = document.createElement("button");
-            replayBtn.className = "action-btn";
-            replayBtn.innerHTML = "🔄 Erneut spielen";
-            replayBtn.onclick = function() {
-                initGame();
+        function saveError() {
+            if (window.localStorage) {
+                window.localStorage.setItem("lola_kap5_errors", String(chapterErrors));
+            }
+        }
+
+        function nextRound() {
+            roundIndex++;
+            showTask();
+        }
+
+        function showFinish() {
+            var message;
+            getEl("progress-fill").style.width = "100%";
+            setText("mode-label", "Training geschafft");
+            setText("instruction-text", "Kapitel 5 ist bereit f&uuml;r die n&auml;chste Wiederholung.");
+            setText("word-box", score + " von " + maxRounds + " Treffern");
+            if (score >= 7) {
+                message = "Starkes Spiel. Du findest schon viele W&ouml;rter wie ein W&ouml;rterbuch-Profi.";
+            } else if (score >= 5) {
+                message = "Gutes Training. Eine kurze Wiederholung macht die W&ouml;rter noch sicherer.";
+            } else {
+                message = "Das war eine Trainingsrunde. Beim n&auml;chsten Durchlauf kommen viele Karten wieder.";
+            }
+            setText("hint-box", message);
+            getEl("options-box").innerHTML = "";
+            getEl("feedback-box").className = "feedback";
+            setText("feedback-box", "Fehler werden f&uuml;r den Meilenstein kapitelweise gemerkt.");
+            getEl("next-btn").className = "wide-btn";
+            getEl("next-btn").innerHTML = "Noch einmal spielen";
+            getEl("next-btn").onclick = function() {
+                getEl("next-btn").innerHTML = "Weiter";
+                getEl("next-btn").onclick = nextRound;
+                startGame();
             };
-            
-            optionsBox.appendChild(replayBtn);
         }
 
-        // Start beim Laden
+        function goBack() {
+            window.location.href = "index.html";
+        }
+
         window.onload = function() {
-            initGame();
+            getEl("back-btn").onclick = goBack;
+            getEl("next-btn").onclick = nextRound;
+            startGame();
         };
     </script>
 </body>
