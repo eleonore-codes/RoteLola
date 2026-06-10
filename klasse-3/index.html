@@ -1,1 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rote Lola 3 - Rechtschreib-Arena</title>
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <style>
+        * { box-sizing: border-box; font-family: 'Verdana', 'Arial', sans-serif; }
+        body { background-color: #0d1b2a; color: #ffffff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; font-size: 19px; line-height: 1.7; letter-spacing: 0.07em; }
+        header { text-align: center; margin-bottom: 20px; width: 100%; max-width: 500px; }
+        h1 { font-size: 22px; color: #00f5d4; margin: 5px 0; text-transform: uppercase; text-shadow: 0 0 10px rgba(0, 245, 212, 0.4); }
+        .menu-container { background: #1b263b; border-radius: 15px; padding: 20px; width: 100%; max-width: 500px; box-shadow: 0 0 15px rgba(0, 245, 212, 0.4); border: 2px solid #00f5d4; display: flex; flex-direction: column; }
+        .section-title { font-weight: bold; color: #00f5d4; margin-top: 15px; margin-bottom: 10px; text-transform: uppercase; font-size: 16px; border-bottom: 1px dashed #415a77; padding-bottom: 4px; }
+        .menu-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+        button { background-color: #415a77; color: #ffffff; border: 2px solid rgba(255,255,255,0.2); padding: 14px 20px; font-size: 19px; font-weight: bold; border-radius: 25px; cursor: pointer; width: 100%; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+        button:active { background-color: #00f5d4; color: #0d1b2a; border-color: #00f5d4; }
+        button.test-btn { background-color: #0d1b2a; color: #00f5d4; border: 2px solid #00f5d4; }
+        .badge { background: rgba(0, 0, 0, 0.3); padding: 2px 10px; border-radius: 10px; font-size: 14px; color: #00f5d4; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏆 Rote Lola - Klasse 3 ⚽</h1>
+    </header>
 
+    <div class="menu-container">
+        <div class="section-title">🏃‍♂️ Vorrunde: Kapitel 1 - 4</div>
+        <div class="menu-grid">
+            <button onclick="window.location.href='kapitel-1.html'"><span>📕 Kapitel 1: Silbenarbeit</span> <span class="badge">S1</span></button>
+            <button onclick="window.location.href='kapitel-2.html'"><span>📘 Kapitel 2: Ableiten & Verlängern</span> <span class="badge">S2</span></button>
+            <button onclick="window.location.href='kapitel-3.html'"><span>📙 Kapitel 3: Besondere Laute</span> <span class="badge">S3</span></button>
+            <button onclick="window.location.href='kapitel-4.html'"><span>📗 Kapitel 4: Kurze Vokale</span> <span class="badge">S4</span></button>
+        </div>
+
+        <div class="section-title">💪 Zwischenrunde: Kapitel 5 & 6</div>
+        <div class="menu-grid">
+            <button onclick="window.location.href='kapitel-5.html'"><span>📕 Kapitel 5: Scharfes ß / ss</span> <span class="badge">S5</span></button>
+            <button onclick="window.location.href='kapitel-6.html'"><span>📘 Kapitel 6: Vokal-Zwillinge</span> <span class="badge">S6</span></button>
+        </div>
+
+        <div class="section-title">🔥 Finalrunde: Kapitel 7 & 8</div>
+        <div class="menu-grid">
+            <button onclick="window.location.href='kapitel-7.html'"><span>📙 Kapitel 7: Großschreibung</span> <span class="badge">S7</span></button>
+            <button class="test-btn" onclick="window.location.href='test-meilenstein-3.html'"><span>🏆 Meilenstein-Test: Kap 7 & 8</span> <span class="badge">TEST</span></button>
+        </div>
+    </div>
+</body>
+</html>
