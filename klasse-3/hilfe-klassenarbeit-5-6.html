@@ -1,1 +1,147 @@
+<!DOCTYPE html>
+<html lang='de'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+    <title>Klassenarbeits-Hilfe 5/6</title>
+    <link rel='apple-touch-icon' href='../apple-touch-icon.png'>
+    <style>
+        * { box-sizing: border-box; }
+        html, body { min-height: 100%; }
+        body { margin: 0; background: #071927; color: #fff; font-family: Arial, Verdana, sans-serif; letter-spacing: 0.03em; user-select: none; -webkit-user-select: none; }
+        .arena { min-height: 100vh; display: flex; flex-direction: column; padding: 12px; background: radial-gradient(circle at 50% 0%, rgba(0,242,254,.17), rgba(7,25,39,0) 34%), linear-gradient(180deg, #102c46 0%, #071927 62%); }
+        .topbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; max-width: 540px; width: 100%; margin: 0 auto 10px auto; }
+        .nav-back { min-width: 78px; min-height: 44px; border: 1px solid #8cc5df; background: rgba(7,25,39,.74); color: #dff9ff; border-radius: 8px; font-size: 15px; font-weight: bold; }
+        .title { flex: 1; min-width: 0; text-align: center; color: #00f2fe; font-size: 17px; font-weight: bold; text-transform: uppercase; }
+        .score { min-width: 78px; text-align: right; color: #fff; font-weight: bold; font-size: 15px; }
+        .progress-track { max-width: 540px; width: 100%; height: 13px; border-radius: 999px; overflow: hidden; margin: 0 auto 12px auto; background: #34526d; border: 1px solid rgba(255,255,255,.18); }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00f2fe, #d7ff4f); }
+        .card { max-width: 540px; width: 100%; margin: 0 auto; background: #142d43; border: 2px solid rgba(0,242,254,.7); border-radius: 8px; padding: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.28); }
+        .mode-row { display: flex; align-items: center; gap: 10px; margin-bottom: 13px; }
+        .mode-icon { width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #071927; background: #d7ff4f; font-size: 23px; font-weight: bold; border: 3px solid #fff; flex: 0 0 auto; }
+        .mode-text { flex: 1; min-width: 0; }
+        .mode-label { color: #d7ff4f; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-bottom: 3px; }
+        .hint { color: #d8f6ff; font-size: 16px; line-height: 1.35; }
+        .task { font-size: 22px; line-height: 1.32; font-weight: bold; margin: 10px 0 14px 0; }
+        .focus { background: #071927; border: 2px solid rgba(255,255,255,.16); border-radius: 8px; min-height: 76px; padding: 14px; display: flex; align-items: center; justify-content: center; text-align: center; color: #fff; font-size: 25px; font-weight: bold; line-height: 1.25; margin-bottom: 14px; }
+        .options { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .option { width: 100%; min-height: 58px; border: 2px solid rgba(255,255,255,.22); border-radius: 8px; background: #264862; color: #fff; padding: 12px; font-size: 21px; font-weight: bold; line-height: 1.18; text-align: center; }
+        .option:active { transform: scale(.99); }
+        .option.correct { background: #d7ff4f; color: #071927; border-color: #fff; }
+        .option.wrong { background: #8d2430; color: #fff; border-color: #ffc3ca; }
+        .feedback { min-height: 42px; margin-top: 12px; color: #d8f6ff; font-size: 17px; line-height: 1.35; font-weight: bold; }
+        .next-btn, .restart-btn, .link-btn { width: 100%; min-height: 56px; border: 0; border-radius: 8px; padding: 12px; font-size: 19px; font-weight: bold; margin-top: 10px; background: #00f2fe; color: #071927; }
+        .link-btn { background: #d7ff4f; color: #071927; }
+        .next-btn[disabled] { opacity: .42; }
+        .final-title { color: #00f2fe; font-size: 25px; font-weight: bold; text-align: center; margin: 4px 0 10px 0; }
+        .final-score { background: #071927; border: 2px solid rgba(215,255,79,.75); border-radius: 8px; padding: 14px; text-align: center; font-size: 20px; font-weight: bold; line-height: 1.45; margin-bottom: 12px; }
+        .review-list { display: grid; gap: 8px; margin-top: 10px; }
+        .review-item { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); border-radius: 8px; padding: 10px; font-size: 16px; line-height: 1.35; }
+        @media (min-width: 520px) { .options.two { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+    <div class='arena'>
+        <div class='topbar'>
+            <button class='nav-back' id='backBtn' type='button'>Zurück</button>
+            <div class='title'>Hilfe 5/6</div>
+            <div class='score' id='scoreBox'>0 / 30</div>
+        </div>
+        <div class='progress-track'><div class='progress-fill' id='progressFill'></div></div>
+        <main class='card' id='card'>
+            <div class='mode-row'>
+                <div class='mode-icon' id='modeIcon'>A</div>
+                <div class='mode-text'>
+                    <div class='mode-label' id='modeLabel'>Klassenarbeits-Hilfe</div>
+                    <div class='hint' id='hintText'>Aufgaben aus dem Hilfe-Heft: kurz lesen, dann antippen.</div>
+                </div>
+            </div>
+            <div class='task' id='taskText'></div>
+            <div class='focus' id='focusText'></div>
+            <div class='options' id='optionsBox'></div>
+            <div class='feedback' id='feedbackBox'></div>
+            <button class='next-btn' id='nextBtn' type='button' disabled>Weiter</button>
+        </main>
+    </div>
+<script>
+(function () {
+    var roundSize = 30;
+    var index = 0;
+    var correct = 0;
+    var locked = false;
+    var misses = {};
+    var current = null;
+    var questions = [
+        { area: 'ABC', icon: 'A', hint: 'Alphabet-Reihe wie im Hilfe-Heft.', task: 'Welcher Buchstabe fehlt?', focus: 'a b c _ e f g', options: ['d', 'h', 'b', 'i'], answer: 'd', key: 'Alphabet' },
+        { area: 'ABC', icon: 'A', hint: 'Alphabet-Reihe wie im Hilfe-Heft.', task: 'Welcher Buchstabe fehlt?', focus: 'g h i _ k l m', options: ['j', 'n', 'i', 'o'], answer: 'j', key: 'Alphabet' },
+        { area: 'ABC', icon: 'A', hint: 'Achte auf die Buchstabenfolge.', task: 'Was kommt nach q?', focus: 'o p q _ s t u', options: ['r', 'v', 'p', 'n'], answer: 'r', key: 'Alphabet' },
+        { area: 'Wörterbuch', icon: 'W', hint: 'Im Wörterbuch zählt jeder Buchstabe von links nach rechts.', task: 'Welches Wort steht zuerst?', focus: 'Hagebutte - Hagelkorn', options: ['Hagebutte', 'Hagelkorn'], answer: 'Hagebutte', key: 'Wörterbuch' },
+        { area: 'Wörterbuch', icon: 'W', hint: 'Vergleiche Buchstabe für Buchstabe.', task: 'Welches Wort steht zuerst?', focus: 'Geier - Geiger', options: ['Geier', 'Geiger'], answer: 'Geier', key: 'Wörterbuch' },
+        { area: 'Wörterbuch', icon: 'W', hint: 'Vergleiche Buchstabe für Buchstabe.', task: 'Welches Wort steht zuerst?', focus: 'März - Märchen', options: ['Märchen', 'März'], answer: 'Märchen', key: 'Wörterbuch' },
+        { area: 'Wörterbuch', icon: 'W', hint: 'Vergleiche Buchstabe für Buchstabe.', task: 'Welches Wort steht zuerst?', focus: 'Narbe - Narkose - Nase', options: ['Narbe', 'Narkose', 'Nase'], answer: 'Narbe', key: 'Wörterbuch' },
+        { area: 'Wörterbuch', icon: 'W', hint: 'Kurze Wörter können zuerst kommen.', task: 'Welches Wort steht zuerst?', focus: 'Alm - Amt - Axt - aus - Aar - auf - als', options: ['Aar', 'Alm', 'als', 'Amt'], answer: 'Aar', key: 'Wörterbuch' },
+        { area: 'Wörterbuch', icon: 'W', hint: 'Tiere alphabetisch ordnen.', task: 'Welches Tier steht zuerst?', focus: 'Schwan - Storch - Salamander - Schnecke - Spinne', options: ['Salamander', 'Schnecke', 'Schwan', 'Spinne'], answer: 'Salamander', key: 'Wörterbuch' },
+        { area: 'Wörterbuch', icon: 'W', hint: 'Tiere alphabetisch ordnen.', task: 'Welches Tier steht zuletzt?', focus: 'Schwan - Storch - Salamander - Schnecke - Spinne', options: ['Storch', 'Spinne', 'Schwan', 'Schnecke'], answer: 'Storch', key: 'Wörterbuch' },
+        { area: 'Fremdwort', icon: '?', hint: 'Verbinde Fremdwort und kurze Bedeutung.', task: 'Was ist ein Laptop?', focus: 'Laptop', options: ['tragbarer Computer', 'Computermaus', 'Nachricht im Internet', 'Internet-Seite'], answer: 'tragbarer Computer', key: 'Fremdwörter' },
+        { area: 'Fremdwort', icon: '?', hint: 'Verbinde Fremdwort und kurze Bedeutung.', task: 'Was ist eine Homepage?', focus: 'Homepage', options: ['Internet-Seite', 'Tastaturtaste', 'Computermaus', 'Briefmarke'], answer: 'Internet-Seite', key: 'Fremdwörter' },
+        { area: 'Fremdwort', icon: '?', hint: 'Verbinde Fremdwort und kurze Bedeutung.', task: 'Was ist eine E-Mail?', focus: 'E-Mail', options: ['Nachricht im Internet', 'Buch zum Nachschlagen', 'Landkarte', 'Sternkunde'], answer: 'Nachricht im Internet', key: 'Fremdwörter' },
+        { area: 'Fremdwort', icon: '?', hint: 'Verbinde Fremdwort und kurze Bedeutung.', task: 'Was ist ein Cursor?', focus: 'Cursor', options: ['Markierung am Computer', 'Tier aus dem Meer', 'gefüllte Kugel', 'Farbe'], answer: 'Markierung am Computer', key: 'Fremdwörter' },
+        { area: 'Fremdwort', icon: '?', hint: 'Verbinde Fremdwort und kurze Bedeutung.', task: 'Was ist ein Atlas?', focus: 'Atlas', options: ['Sammlung von Landkarten', 'Modell der Erde', 'Sternkunde', 'Nachschlagewerk'], answer: 'Sammlung von Landkarten', key: 'Fremdwörter' },
+        { area: 'Fremdwort', icon: '?', hint: 'Verbinde Fremdwort und kurze Bedeutung.', task: 'Was ist ein Lexikon?', focus: 'Lexikon', options: ['Nachschlagewerk zu Stichworten', 'Landkartenbuch', 'Sternkunde', 'Wissenschaft von alten Kulturen'], answer: 'Nachschlagewerk zu Stichworten', key: 'Fremdwörter' },
+        { area: 'Fremdwort', icon: '?', hint: 'Verbinde Fremdwort und kurze Bedeutung.', task: 'Was bedeutet Astronomie?', focus: 'Astronomie', options: ['Sternkunde', 'Altertumskunde', 'Erdmodell', 'Buchform'], answer: 'Sternkunde', key: 'Fremdwörter' },
+        { area: 'Fehler', icon: 'D', hint: 'Detektiv: Finde die richtige Schreibweise.', task: 'Welche Form ist richtig?', focus: 'Frankraich / Frankreich', options: ['Frankreich', 'Frankraich'], answer: 'Frankreich', key: 'Fehlerdetektiv' },
+        { area: 'Fehler', icon: 'D', hint: 'Detektiv: Finde die richtige Schreibweise.', task: 'Welche Form ist richtig?', focus: 'Campinplatz / Campingplatz', options: ['Campingplatz', 'Campinplatz'], answer: 'Campingplatz', key: 'Fehlerdetektiv' },
+        { area: 'Fehler', icon: 'D', hint: 'Detektiv: Finde die richtige Schreibweise.', task: 'Welche Form ist richtig?', focus: 'Dünen / Dünnen', options: ['Dünen', 'Dünnen'], answer: 'Dünen', key: 'Fehlerdetektiv' },
+        { area: 'Fehler', icon: 'D', hint: 'Detektiv: Finde die richtige Schreibweise.', task: 'Welche Form ist richtig?', focus: 'Strand / Stran', options: ['Strand', 'Stran'], answer: 'Strand', key: 'Fehlerdetektiv' },
+        { area: 'Fehler', icon: 'D', hint: 'Detektiv: Finde die richtige Schreibweise.', task: 'Welche Form ist richtig?', focus: 'Atlantik / Atlanlik', options: ['Atlantik', 'Atlanlik'], answer: 'Atlantik', key: 'Fehlerdetektiv' },
+        { area: 'Fehler', icon: 'D', hint: 'Detektiv: Finde die richtige Schreibweise.', task: 'Welche Form ist richtig?', focus: 'Baguette / Bagette', options: ['Baguette', 'Bagette'], answer: 'Baguette', key: 'Fehlerdetektiv' },
+        { area: 'Langes i', icon: 'I', hint: 'Höre das lange i im Wort.', task: 'Welches Tier passt zum langen i?', focus: 'Tiernamen aus dem Heft', options: ['Tiger', 'Delfin', 'Krokodil', 'Schlange'], answer: 'Tiger', key: 'Langes i' },
+        { area: 'Langes i', icon: 'I', hint: 'Höre das lange i im Wort.', task: 'Welches Tier passt zum langen i?', focus: 'Tiernamen aus dem Heft', options: ['Igel', 'Frosch', 'Affe', 'Ente'], answer: 'Igel', key: 'Langes i' },
+        { area: 'Langes i', icon: 'I', hint: 'Höre das lange i im Wort.', task: 'Welches Tier passt zum langen i?', focus: 'Tiernamen aus dem Heft', options: ['Biber', 'Bett', 'Kamm', 'Hund'], answer: 'Biber', key: 'Langes i' },
+        { area: 'Langes i', icon: 'I', hint: 'Silben aus dem Hilfe-Heft.', task: 'Welches Wort passt: Sie hängt vor vielen Fenstern.', focus: 'Gar + di + ne', options: ['Gardine', 'Garne', 'Dine', 'Kardine'], answer: 'Gardine', key: 'Langes i' },
+        { area: 'Langes i', icon: 'I', hint: 'Silben aus dem Hilfe-Heft.', task: 'Welches Wort passt: anderes Wort für Krankenhaus.', focus: 'Kli + nik', options: ['Klinik', 'Kino', 'Linie', 'Kilogramm'], answer: 'Klinik', key: 'Langes i' },
+        { area: 'Langes i', icon: 'I', hint: 'Silben aus dem Hilfe-Heft.', task: 'Welches Wort passt: Hier sieht man neue Filme.', focus: 'Ki + no', options: ['Kino', 'Klinik', 'Kilo', 'Linie'], answer: 'Kino', key: 'Langes i' },
+        { area: 'Langes i', icon: 'I', hint: 'Wörter alphabetisch ordnen.', task: 'Welches Wort steht zuerst?', focus: 'Kilogramm - Termin - Linie - Kino - Olive - Gardine - Maschine - Idee', options: ['Gardine', 'Idee', 'Kilogramm', 'Kino'], answer: 'Gardine', key: 'Langes i' },
+        { area: 'Langes i', icon: 'I', hint: 'Wörter alphabetisch ordnen.', task: 'Welches Wort steht zuletzt?', focus: 'Kilogramm - Termin - Linie - Kino - Olive - Gardine - Maschine - Idee', options: ['Termin', 'Olive', 'Maschine', 'Linie'], answer: 'Termin', key: 'Langes i' },
+        { area: 'Dehnungs-h', icon: 'H', hint: 'Das h macht den Selbstlaut lang.', task: 'Welches Wort hat Dehnungs-h?', focus: 'Wähle das h-Wort.', options: ['Zahn', 'Zug', 'Zelt', 'Zitrone'], answer: 'Zahn', key: 'Dehnungs-h' },
+        { area: 'Dehnungs-h', icon: 'H', hint: 'Das h macht den Selbstlaut lang.', task: 'Welches Wort passt zum Bild einer Höhle?', focus: 'Höhle', options: ['Höhle', 'Hölle', 'Helle', 'Holen'], answer: 'Höhle', key: 'Dehnungs-h' },
+        { area: 'Dehnungs-h', icon: 'H', hint: 'Lückensatz aus dem Hilfe-Heft.', task: 'Simon verlässt jeden Morgen die ____ und geht zur Schule.', focus: 'Wohnung oder Wonung?', options: ['Wohnung', 'Wonung', 'Wonnung', 'Wohning'], answer: 'Wohnung', key: 'Dehnungs-h' },
+        { area: 'Dehnungs-h', icon: 'H', hint: 'Lückensatz aus dem Hilfe-Heft.', task: 'Frau Sommer ist seine ____.', focus: 'Lehrerin oder Lererin?', options: ['Lehrerin', 'Lererin', 'Leererinn', 'Lehrerin.'], answer: 'Lehrerin', key: 'Dehnungs-h' },
+        { area: 'Dehnungs-h', icon: 'H', hint: 'Lückensatz aus dem Hilfe-Heft.', task: 'Dann ____ sie sich warm.', focus: 'dehnen oder denen?', options: ['dehnen', 'denen', 'dehnenh', 'dehnnen'], answer: 'dehnen', key: 'Dehnungs-h' },
+        { area: 'Dehnungs-h', icon: 'H', hint: 'Lückensatz aus dem Hilfe-Heft.', task: 'Zur ____ bekommt er eine Urkunde.', focus: 'Belohnung', options: ['Belohnung', 'Belonung', 'Belonnung', 'Belohnunk'], answer: 'Belohnung', key: 'Dehnungs-h' },
+        { area: 'Scharfes ß', icon: 'SS', hint: 'Wörter aus der Giesskanne.', task: 'Wie viele Silben hat das Wort?', focus: 'Fuß', options: ['1 Silbe', '2 Silben', '3 Silben'], answer: '1 Silbe', key: 'ss/ß' },
+        { area: 'Scharfes ß', icon: 'SS', hint: 'Wörter aus der Giesskanne.', task: 'Wie viele Silben hat das Wort?', focus: 'Straße', options: ['2 Silben', '1 Silbe', '3 Silben'], answer: '2 Silben', key: 'ss/ß' },
+        { area: 'Scharfes ß', icon: 'SS', hint: 'Wörter aus der Giesskanne.', task: 'Wie viele Silben hat das Wort?', focus: 'gießen', options: ['2 Silben', '1 Silbe', '3 Silben'], answer: '2 Silben', key: 'ss/ß' },
+        { area: 'Scharfes ß', icon: 'SS', hint: 'Wörter aus der Giesskanne.', task: 'Wie viele Silben hat das Wort?', focus: 'zerreißen', options: ['3 Silben', '2 Silben', '1 Silbe'], answer: '3 Silben', key: 'ss/ß' },
+        { area: 'Scharfes ß', icon: 'SS', hint: 'Wörter aus der Giesskanne.', task: 'Wie viele Silben hat das Wort?', focus: 'Fußballtor', options: ['3 Silben', '2 Silben', '4 Silben'], answer: '3 Silben', key: 'ss/ß' }
+    ];
+    var round = [];
+    var scoreBox = document.getElementById('scoreBox');
+    var progressFill = document.getElementById('progressFill');
+    var card = document.getElementById('card');
+    var backBtn = document.getElementById('backBtn');
+    var modeIcon = document.getElementById('modeIcon');
+    var modeLabel = document.getElementById('modeLabel');
+    var hintText = document.getElementById('hintText');
+    var taskText = document.getElementById('taskText');
+    var focusText = document.getElementById('focusText');
+    var optionsBox = document.getElementById('optionsBox');
+    var feedbackBox = document.getElementById('feedbackBox');
+    var nextBtn = document.getElementById('nextBtn');
+    function shuffle(list) { var copy = list.slice(0); var i; var j; var temp; for (i = copy.length - 1; i > 0; i -= 1) { j = Math.floor(Math.random() * (i + 1)); temp = copy[i]; copy[i] = copy[j]; copy[j] = temp; } return copy; }
+    function startRound() { index = 0; correct = 0; locked = false; misses = {}; round = shuffle(questions).slice(0, roundSize); showQuestion(); }
+    function updateTop() { scoreBox.innerHTML = correct + ' / ' + roundSize; progressFill.style.width = Math.round((index / roundSize) * 100) + '%'; }
+    function showQuestion() { var opts; var i; var btn; locked = false; nextBtn.disabled = true; feedbackBox.innerHTML = ''; current = round[index]; updateTop(); modeIcon.innerHTML = current.icon; modeLabel.innerHTML = current.area; hintText.innerHTML = current.hint; taskText.innerHTML = current.task; focusText.innerHTML = current.focus; optionsBox.innerHTML = ''; optionsBox.className = current.options.length < 4 ? 'options two' : 'options'; opts = shuffle(current.options); for (i = 0; i < opts.length; i += 1) { btn = document.createElement('button'); btn.type = 'button'; btn.className = 'option'; btn.innerHTML = opts[i]; btn.onclick = makeChoose(opts[i], btn); optionsBox.appendChild(btn); } }
+    function makeChoose(value, button) { return function () { choose(value, button); }; }
+    function choose(value, button) { var buttons; var i; if (locked) { return; } locked = true; buttons = optionsBox.getElementsByTagName('button'); for (i = 0; i < buttons.length; i += 1) { if (buttons[i].innerHTML === current.answer) { buttons[i].className = 'option correct'; } } if (value === current.answer) { correct += 1; feedbackBox.innerHTML = 'Treffer. Genau diese Form brauchst du.'; } else { button.className = 'option wrong'; misses[current.key] = true; feedbackBox.innerHTML = 'Fast. Richtig ist: ' + current.answer; } nextBtn.disabled = false; updateTop(); }
+    function nextQuestion() { if (!locked) { return; } index += 1; if (index >= roundSize) { finishRound(); } else { showQuestion(); } }
+    function getGrade(percent) { if (percent >= 96) { return '1'; } if (percent >= 80) { return '2'; } if (percent >= 60) { return '3'; } if (percent >= 45) { return '4'; } if (percent >= 16) { return '5'; } return '6'; }
+    function finishRound() { var percent = Math.round((correct / roundSize) * 100); var grade = getGrade(percent); var key; var review = ''; progressFill.style.width = '100%'; for (key in misses) { if (misses.hasOwnProperty(key)) { review += '<div class="review-item">Noch einmal anschauen: <b>' + key + '</b></div>'; } } if (review === '') { review = '<div class="review-item">Alles sauber. Das Hilfe-Heft sitzt richtig gut.</div>'; } card.innerHTML = '<div class="final-title">Klassenarbeits-Hilfe geschafft</div>' + '<div class="final-score">' + correct + ' von ' + roundSize + ' richtig<br>' + percent + '% - Note ' + grade + '</div>' + '<div class="hint">Diese Runde nutzt Wörter und Aufgabentypen aus dem frisch ausgeteilten Hilfe-Heft zu Kapitel 5 und 6.</div>' + '<div class="review-list">' + review + '</div>' + '<button class="restart-btn" id="restartBtn" type="button">Nochmal mischen</button>' + '<button class="link-btn" id="testBtn" type="button">Zum Meilenstein-Test 3</button>' + '<button class="link-btn" id="menuBtn" type="button">Zur Kapitel-Auswahl</button>'; document.getElementById('restartBtn').onclick = function () { window.location.reload(); }; document.getElementById('testBtn').onclick = function () { window.location.href = 'test-meilenstein-3.html'; }; document.getElementById('menuBtn').onclick = function () { window.location.href = 'index.html'; }; }
+    nextBtn.onclick = nextQuestion;
+    backBtn.onclick = function () { window.location.href = 'index.html'; };
+    startRound();
+}());
+</script>
+</body>
+</html>
 
