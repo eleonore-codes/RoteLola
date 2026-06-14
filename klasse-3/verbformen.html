@@ -1,1 +1,156 @@
+<!DOCTYPE html>
+<html lang='de'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+    <title>Rote Lola - Verbformen</title>
+    <link rel='apple-touch-icon' href='../apple-touch-icon.png'>
+    <style>
+        * { box-sizing: border-box; }
+        html, body { min-height: 100%; }
+        body { margin: 0; background: #081827; color: #ffffff; font-family: Arial, Verdana, sans-serif; letter-spacing: 0.03em; user-select: none; -webkit-user-select: none; }
+        .arena { min-height: 100vh; display: flex; flex-direction: column; padding: 12px; background: radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.15), rgba(8, 24, 39, 0) 34%), linear-gradient(180deg, #102b45 0%, #081827 62%); }
+        .topbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; max-width: 540px; width: 100%; margin: 0 auto 10px auto; }
+        .nav-back { min-width: 78px; min-height: 44px; border: 1px solid #89b8d9; background: rgba(8, 24, 39, 0.74); color: #d8f6ff; border-radius: 8px; font-size: 15px; font-weight: bold; }
+        .title { flex: 1; min-width: 0; text-align: center; color: #00f2fe; font-size: 18px; font-weight: bold; text-transform: uppercase; }
+        .score { min-width: 78px; text-align: right; color: #ffffff; font-weight: bold; font-size: 15px; }
+        .progress-track { max-width: 540px; width: 100%; height: 13px; border-radius: 999px; overflow: hidden; margin: 0 auto 12px auto; background: #34526d; border: 1px solid rgba(255,255,255,0.18); }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00f2fe, #d7ff4f); }
+        .card { max-width: 540px; width: 100%; margin: 0 auto; background: #142d43; border: 2px solid rgba(0, 242, 254, 0.75); border-radius: 8px; padding: 15px; box-shadow: 0 12px 30px rgba(0,0,0,0.28); }
+        .mode-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .mode-icon { width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #081827; background: #d7ff4f; font-size: 23px; font-weight: bold; border: 3px solid #ffffff; flex: 0 0 auto; letter-spacing: 0; }
+        .mode-text { flex: 1; min-width: 0; }
+        .mode-label { color: #d7ff4f; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-bottom: 3px; }
+        .hint { color: #d8f6ff; font-size: 16px; line-height: 1.35; }
+        .timeline { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin: 10px 0 12px 0; }
+        .time-chip { border: 1px solid rgba(255,255,255,0.18); border-radius: 8px; padding: 7px 4px; text-align: center; background: #0d253b; color: #d8f6ff; font-size: 13px; font-weight: bold; line-height: 1.2; }
+        .time-chip.active { background: #d7ff4f; color: #081827; border-color: #ffffff; }
+        .task { font-size: 22px; line-height: 1.3; font-weight: bold; margin: 10px 0 12px 0; }
+        .focus { background: #081827; border: 2px dashed #00f2fe; border-radius: 8px; min-height: 106px; padding: 14px; display: flex; align-items: center; justify-content: center; text-align: center; color: #ffffff; font-size: 30px; font-weight: bold; line-height: 1.25; margin-bottom: 12px; overflow-wrap: anywhere; }
+        .base { color: #d7ff4f; display: inline-block; margin: 0 0.1em; }
+        .pronoun { color: #00f2fe; display: inline-block; margin-right: 0.18em; }
+        .options { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .option { width: 100%; min-height: 60px; border: 2px solid rgba(255,255,255,0.24); border-radius: 8px; background: #264862; color: #ffffff; padding: 12px; font-size: 22px; font-weight: bold; line-height: 1.18; text-align: center; }
+        .option:active { transform: scale(0.99); }
+        .option.correct { background: #d7ff4f; color: #081827; border-color: #ffffff; }
+        .option.wrong { background: #8d2430; color: #ffffff; border-color: #ffc3ca; }
+        .feedback { min-height: 46px; margin-top: 12px; color: #d8f6ff; font-size: 17px; line-height: 1.35; font-weight: bold; text-align: center; }
+        .next-btn, .restart-btn, .link-btn { width: 100%; min-height: 56px; border: 0; border-radius: 8px; padding: 12px; font-size: 19px; font-weight: bold; margin-top: 10px; background: #00f2fe; color: #081827; }
+        .link-btn { background: #d7ff4f; }
+        .next-btn[disabled] { opacity: 0.42; }
+        .final-title { color: #00f2fe; font-size: 25px; font-weight: bold; text-align: center; margin: 4px 0 10px 0; }
+        .final-score { background: #081827; border: 2px solid rgba(215,255,79,0.75); border-radius: 8px; padding: 14px; text-align: center; font-size: 20px; font-weight: bold; line-height: 1.45; margin-bottom: 12px; }
+        .review-list { display: grid; gap: 8px; margin-top: 10px; }
+        .review-item { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 10px; font-size: 16px; line-height: 1.35; }
+        @media (max-width: 390px) { .focus { font-size: 26px; } .option { font-size: 20px; } .task { font-size: 20px; } }
+    </style>
+</head>
+<body>
+    <div class='arena'>
+        <div class='topbar'>
+            <button class='nav-back' id='backBtn' type='button'>Zurück</button>
+            <div class='title'>Verbformen</div>
+            <div class='score' id='scoreBox'>0 / 20</div>
+        </div>
+        <div class='progress-track'><div class='progress-fill' id='progressFill'></div></div>
+        <main class='card' id='card'>
+            <div class='mode-row'>
+                <div class='mode-icon' id='modeIcon'>V</div>
+                <div class='mode-text'>
+                    <div class='mode-label' id='modeLabel'>Zeitform-Arena</div>
+                    <div class='hint' id='hintText'>Nur richtig geschriebene Verbformen stehen zur Auswahl.</div>
+                </div>
+            </div>
+            <div class='timeline' id='timelineBox'>
+                <div class='time-chip' id='pastChip'>GESTERN<br>Vergangenheit</div>
+                <div class='time-chip' id='presentChip'>HEUTE<br>Gegenwart</div>
+                <div class='time-chip' id='futureChip'>MORGEN<br>Zukunft</div>
+            </div>
+            <div class='task' id='taskText'></div>
+            <div class='focus' id='focusText'></div>
+            <div class='options' id='optionsBox'></div>
+            <div class='feedback' id='feedbackBox'></div>
+            <button class='next-btn' id='nextBtn' type='button' disabled>Weiter</button>
+        </main>
+    </div>
+<script>
+(function () {
+    var roundSize = 20;
+    var index = 0;
+    var correct = 0;
+    var locked = false;
+    var current = null;
+    var misses = {};
+    var verbs = [
+        { base: 'backen', present: ['ich backe','du backst','er backt','wir backen'], past: ['ich backte','du backtest','er backte','wir backten'], future: ['ich werde backen','du wirst backen','er wird backen','wir werden backen'] },
+        { base: 'beginnen', present: ['ich beginne','du beginnst','er beginnt','wir beginnen'], past: ['ich begann','du begannst','er begann','wir begannen'], future: ['ich werde beginnen','du wirst beginnen','er wird beginnen','wir werden beginnen'] },
+        { base: 'beißen', present: ['ich beiße','du beißt','er beißt','wir beißen'], past: ['ich biss','du bisst','er biss','wir bissen'], future: ['ich werde beißen','du wirst beißen','er wird beißen','wir werden beißen'] },
+        { base: 'blicken', present: ['ich blicke','du blickst','er blickt','wir blicken'], past: ['ich blickte','du blicktest','er blickte','wir blickten'], future: ['ich werde blicken','du wirst blicken','er wird blicken','wir werden blicken'] },
+        { base: 'brüllen', present: ['ich brülle','du brüllst','er brüllt','wir brüllen'], past: ['ich brüllte','du brülltest','er brüllte','wir brüllten'], future: ['ich werde brüllen','du wirst brüllen','er wird brüllen','wir werden brüllen'] },
+        { base: 'drehen', present: ['ich drehe','du drehst','er dreht','wir drehen'], past: ['ich drehte','du drehtest','er drehte','wir drehten'], future: ['ich werde drehen','du wirst drehen','er wird drehen','wir werden drehen'] },
+        { base: 'drücken', present: ['ich drücke','du drückst','er drückt','wir drücken'], past: ['ich drückte','du drücktest','er drückte','wir drückten'], future: ['ich werde drücken','du wirst drücken','er wird drücken','wir werden drücken'] },
+        { base: 'erzählen', present: ['ich erzähle','du erzählst','er erzählt','wir erzählen'], past: ['ich erzählte','du erzähltest','er erzählte','wir erzählten'], future: ['ich werde erzählen','du wirst erzählen','er wird erzählen','wir werden erzählen'] },
+        { base: 'fehlen', present: ['ich fehle','du fehlst','er fehlt','wir fehlen'], past: ['ich fehlte','du fehltest','er fehlte','wir fehlten'], future: ['ich werde fehlen','du wirst fehlen','er wird fehlen','wir werden fehlen'] },
+        { base: 'fliegen', present: ['ich fliege','du fliegst','er fliegt','wir fliegen'], past: ['ich flog','du flogst','er flog','wir flogen'], future: ['ich werde fliegen','du wirst fliegen','er wird fliegen','wir werden fliegen'] },
+        { base: 'gießen', present: ['ich gieße','du gießt','er gießt','wir gießen'], past: ['ich goss','du gosst','er goss','wir gossen'], future: ['ich werde gießen','du wirst gießen','er wird gießen','wir werden gießen'] },
+        { base: 'helfen', present: ['ich helfe','du hilfst','er hilft','wir helfen'], past: ['ich half','du halfst','er half','wir halfen'], future: ['ich werde helfen','du wirst helfen','er wird helfen','wir werden helfen'] },
+        { base: 'holen', present: ['ich hole','du holst','er holt','wir holen'], past: ['ich holte','du holtest','er holte','wir holten'], future: ['ich werde holen','du wirst holen','er wird holen','wir werden holen'] },
+        { base: 'kommen', present: ['ich komme','du kommst','er kommt','wir kommen'], past: ['ich kam','du kamst','er kam','wir kamen'], future: ['ich werde kommen','du wirst kommen','er wird kommen','wir werden kommen'] },
+        { base: 'lernen', present: ['ich lerne','du lernst','er lernt','wir lernen'], past: ['ich lernte','du lerntest','er lernte','wir lernten'], future: ['ich werde lernen','du wirst lernen','er wird lernen','wir werden lernen'] },
+        { base: 'malen', present: ['ich male','du malst','er malt','wir malen'], past: ['ich malte','du maltest','er malte','wir malten'], future: ['ich werde malen','du wirst malen','er wird malen','wir werden malen'] },
+        { base: 'nehmen', present: ['ich nehme','du nimmst','er nimmt','wir nehmen'], past: ['ich nahm','du nahmst','er nahm','wir nahmen'], future: ['ich werde nehmen','du wirst nehmen','er wird nehmen','wir werden nehmen'] },
+        { base: 'packen', present: ['ich packe','du packst','er packt','wir packen'], past: ['ich packte','du packtest','er packte','wir packten'], future: ['ich werde packen','du wirst packen','er wird packen','wir werden packen'] },
+        { base: 'reisen', present: ['ich reise','du reist','er reist','wir reisen'], past: ['ich reiste','du reistest','er reiste','wir reisten'], future: ['ich werde reisen','du wirst reisen','er wird reisen','wir werden reisen'] },
+        { base: 'rennen', present: ['ich renne','du rennst','er rennt','wir rennen'], past: ['ich rannte','du ranntest','er rannte','wir rannten'], future: ['ich werde rennen','du wirst rennen','er wird rennen','wir werden rennen'] },
+        { base: 'schließen', present: ['ich schließe','du schließt','er schließt','wir schließen'], past: ['ich schloss','du schlosst','er schloss','wir schlossen'], future: ['ich werde schließen','du wirst schließen','er wird schließen','wir werden schließen'] },
+        { base: 'schwimmen', present: ['ich schwimme','du schwimmst','er schwimmt','wir schwimmen'], past: ['ich schwamm','du schwammst','er schwamm','wir schwammen'], future: ['ich werde schwimmen','du wirst schwimmen','er wird schwimmen','wir werden schwimmen'] },
+        { base: 'spielen', present: ['ich spiele','du spielst','er spielt','wir spielen'], past: ['ich spielte','du spieltest','er spielte','wir spielten'], future: ['ich werde spielen','du wirst spielen','er wird spielen','wir werden spielen'] },
+        { base: 'stehen', present: ['ich stehe','du stehst','er steht','wir stehen'], past: ['ich stand','du standst','er stand','wir standen'], future: ['ich werde stehen','du wirst stehen','er wird stehen','wir werden stehen'] },
+        { base: 'verlieren', present: ['ich verliere','du verlierst','er verliert','wir verlieren'], past: ['ich verlor','du verlorst','er verlor','wir verloren'], future: ['ich werde verlieren','du wirst verlieren','er wird verlieren','wir werden verlieren'] },
+        { base: 'wählen', present: ['ich wähle','du wählst','er wählt','wir wählen'], past: ['ich wählte','du wähltest','er wählte','wir wählten'], future: ['ich werde wählen','du wirst wählen','er wird wählen','wir werden wählen'] },
+        { base: 'zählen', present: ['ich zähle','du zählst','er zählt','wir zählen'], past: ['ich zählte','du zähltest','er zählte','wir zählten'], future: ['ich werde zählen','du wirst zählen','er wird zählen','wir werden zählen'] }
+    ];
+    var round = [];
+    var scoreBox = document.getElementById('scoreBox');
+    var progressFill = document.getElementById('progressFill');
+    var backBtn = document.getElementById('backBtn');
+    var card = document.getElementById('card');
+    var modeIcon = document.getElementById('modeIcon');
+    var modeLabel = document.getElementById('modeLabel');
+    var hintText = document.getElementById('hintText');
+    var taskText = document.getElementById('taskText');
+    var focusText = document.getElementById('focusText');
+    var optionsBox = document.getElementById('optionsBox');
+    var feedbackBox = document.getElementById('feedbackBox');
+    var nextBtn = document.getElementById('nextBtn');
+    var pastChip = document.getElementById('pastChip');
+    var presentChip = document.getElementById('presentChip');
+    var futureChip = document.getElementById('futureChip');
+    function shuffle(list) { var copy = list.slice(0); var i; var j; var temp; for (i = copy.length - 1; i > 0; i -= 1) { j = Math.floor(Math.random() * (i + 1)); temp = copy[i]; copy[i] = copy[j]; copy[j] = temp; } return copy; }
+    function unique(list) { var out = []; var seen = {}; var i; for (i = 0; i < list.length; i += 1) { if (!seen[list[i]]) { seen[list[i]] = true; out.push(list[i]); } } return out; }
+    function timeName(key) { if (key === 'past') { return 'Vergangenheit'; } if (key === 'future') { return 'Zukunft'; } return 'Gegenwart'; }
+    function timeHint(key) { if (key === 'past') { return 'GESTERN'; } if (key === 'future') { return 'MORGEN'; } return 'HEUTE'; }
+    function setTimeline(key) { pastChip.className = key === 'past' ? 'time-chip active' : 'time-chip'; presentChip.className = key === 'present' ? 'time-chip active' : 'time-chip'; futureChip.className = key === 'future' ? 'time-chip active' : 'time-chip'; }
+    function formOptions(timeKey, formIndex, answer, verbIndex) { var list = []; var i; for (i = 0; i < verbs.length; i += 1) { if (i !== verbIndex) { list.push(verbs[i][timeKey][formIndex]); } } return shuffle([answer].concat(shuffle(unique(list)).slice(0, 3))); }
+    function baseOptions(answer, verbIndex) { var list = []; var i; for (i = 0; i < verbs.length; i += 1) { if (i !== verbIndex) { list.push(verbs[i].base); } } return shuffle([answer].concat(shuffle(unique(list)).slice(0, 3))); }
+    function makeQuestion(verbIndex, timeKey, formIndex, kind) { var verb = verbs[verbIndex]; var form = verb[timeKey][formIndex]; if (kind === 'base') { return { kind: kind, timeKey: timeKey, answer: verb.base, key: 'Grundform finden', mode: 'Grundform', icon: 'G', hint: 'Finde die Grundform im Wörterbuch-Stil.', task: 'Welche Grundform gehört dazu?', focus: '<span class="pronoun">' + form + '</span>', options: baseOptions(verb.base, verbIndex) }; } if (kind === 'time') { return { kind: kind, timeKey: timeKey, answer: timeName(timeKey), key: 'Zeitform erkennen', mode: 'Zeitform', icon: 'Z', hint: 'Ordne die Form auf der Zeitachse ein.', task: 'Welche Zeitform ist das?', focus: '<span class="pronoun">' + form + '</span>', options: ['Gegenwart', 'Vergangenheit', 'Zukunft'] }; } return { kind: kind, timeKey: timeKey, answer: form, key: timeName(timeKey), mode: timeName(timeKey), icon: 'V', hint: timeHint(timeKey) + ': Grundform und Personalpronomen zusammen lesen.', task: 'Welche Verbform passt?', focus: '<span class="base">' + verb.base + '</span><br><span class="pronoun">' + form.split(' ')[0] + '</span> + ?', options: formOptions(timeKey, formIndex, form, verbIndex) }; }
+    function buildRound() { var out = []; var times = ['present', 'past', 'future']; var kinds = ['form', 'base', 'time']; var order = shuffle(verbs); var i; var t; var formIndex; var kind; for (i = 0; i < order.length && out.length < roundSize; i += 1) { t = times[out.length % times.length]; formIndex = out.length % 4; kind = kinds[out.length % kinds.length]; out.push(makeQuestion(verbs.indexOf(order[i]), t, formIndex, kind)); } return shuffle(out); }
+    function startRound() { index = 0; correct = 0; locked = false; current = null; misses = {}; round = buildRound(); showQuestion(); }
+    function updateTop() { scoreBox.innerHTML = correct + ' / ' + roundSize; progressFill.style.width = Math.round((index / roundSize) * 100) + '%'; }
+    function showQuestion() { var opts; var i; var btn; locked = false; nextBtn.disabled = true; feedbackBox.innerHTML = ''; current = round[index]; updateTop(); setTimeline(current.timeKey); modeIcon.innerHTML = current.icon; modeLabel.innerHTML = current.mode; hintText.innerHTML = current.hint; taskText.innerHTML = current.task; focusText.innerHTML = current.focus; optionsBox.innerHTML = ''; opts = shuffle(current.options); for (i = 0; i < opts.length; i += 1) { btn = document.createElement('button'); btn.type = 'button'; btn.className = 'option'; btn.setAttribute('data-value', opts[i]); btn.innerHTML = opts[i]; btn.onclick = makeChoose(opts[i], btn); optionsBox.appendChild(btn); } }
+    function makeChoose(value, button) { return function () { choose(value, button); }; }
+    function choose(value, button) { var buttons; var i; if (locked) { return; } locked = true; buttons = optionsBox.getElementsByTagName('button'); for (i = 0; i < buttons.length; i += 1) { if (buttons[i].getAttribute('data-value') === current.answer) { buttons[i].className = 'option correct'; } } if (value === current.answer) { correct += 1; feedbackBox.innerHTML = 'Treffer. Du hast nur richtige Verbformen gelesen.'; } else { button.className = 'option wrong'; misses[current.key] = true; feedbackBox.innerHTML = 'Fast. Richtig ist: ' + current.answer; } nextBtn.disabled = false; updateTop(); }
+    function getGrade(percent) { if (percent >= 96) { return '1'; } if (percent >= 80) { return '2'; } if (percent >= 60) { return '3'; } if (percent >= 45) { return '4'; } if (percent >= 16) { return '5'; } return '6'; }
+    function finishRound() { var percent = Math.round((correct / roundSize) * 100); var grade = getGrade(percent); var key; var review = ''; progressFill.style.width = '100%'; for (key in misses) { if (misses.hasOwnProperty(key)) { review += '<div class="review-item">Noch einmal üben: <b>' + key + '</b></div>'; } } if (review === '') { review = '<div class="review-item">Alles sicher: Grundformen, Gegenwart, Vergangenheit und Zukunft sitzen.</div>'; } card.innerHTML = '<div class="final-title">Verbformen geschafft</div>' + '<div class="final-score">' + correct + ' von ' + roundSize + ' richtig<br>' + percent + '% - Note ' + grade + '</div>' + '<div class="hint">Alle Antwortmöglichkeiten waren korrekt geschriebene Verbformen aus der Rote-Lola-Wortwelt.</div>' + '<div class="review-list">' + review + '</div>' + '<button class="restart-btn" id="restartBtn" type="button">Nochmal mischen</button>' + '<button class="link-btn" id="menuBtn" type="button">Zur Kapitel-Auswahl</button>';
+        document.getElementById('restartBtn').onclick = function () { window.location.reload(); };
+        document.getElementById('menuBtn').onclick = function () { window.location.href = 'index.html'; };
+    }
+    function nextQuestion() { if (!locked) { return; } index += 1; if (index >= roundSize) { finishRound(); } else { showQuestion(); } }
+    nextBtn.onclick = nextQuestion;
+    backBtn.onclick = function () { window.location.href = 'index.html'; };
+    startRound();
+}());
+</script>
+</body>
+</html>
 
